@@ -2,6 +2,7 @@ package ca.lsuderman.triviaapi;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -23,7 +24,6 @@ import java.util.Queue;
 public class MainActivity extends AppCompatActivity {
 
     private Button btnGenerate;
-    private ListView lvQuizItems;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,29 +31,30 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         btnGenerate = findViewById(R.id.btnGenerate);
-        lvQuizItems = findViewById(R.id.lvQuizItems);
 
         TriviaDataService triviaDataService = new TriviaDataService(MainActivity.this);
 
         btnGenerate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                triviaDataService.getQuestions(new TriviaDataService.QuestionsResponse() {
-                    @Override
-                    public void onError(String error) {
-                        Toast.makeText(MainActivity.this, error, Toast.LENGTH_SHORT).show();
-                    }
+                startActivity(new Intent(getApplicationContext(), CreateQuizActivity.class));
 
-                    @Override
-                    public void onResponse(List<Question> questions) {
-                        ArrayAdapter arrayAdapter = new ArrayAdapter(MainActivity.this, android.R.layout.simple_list_item_1, questions);
-                        lvQuizItems.setAdapter(arrayAdapter);
-
-//                        for (Question question: questions){
-//                            txtTest.setText(question.toString());
-//                        }
-                    }
-                });
+//                triviaDataService.getQuestions(new TriviaDataService.QuestionsResponse() {
+//                    @Override
+//                    public void onError(String error) {
+//                        Toast.makeText(MainActivity.this, error, Toast.LENGTH_SHORT).show();
+//                    }
+//
+//                    @Override
+//                    public void onResponse(List<Question> questions) {
+//                        ArrayAdapter arrayAdapter = new ArrayAdapter(MainActivity.this, android.R.layout.simple_list_item_1, questions);
+//                        lvQuizItems.setAdapter(arrayAdapter);
+//
+////                        for (Question question: questions){
+////                            txtTest.setText(question.toString());
+////                        }
+//                    }
+//                });
             }
         });
     }

@@ -2,6 +2,7 @@ package ca.lsuderman.triviaapi;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -86,6 +87,7 @@ public class CreateQuizActivity extends AppCompatActivity {
 
                 //TODO: check that selected category has enough questions
 
+                // saves questionType as correct values for api submission
                 String questionType = "";
                 if (txtQuestionType.getText().toString().equals("Multiple Choice")) {
                     questionType = "multiple";
@@ -94,6 +96,7 @@ public class CreateQuizActivity extends AppCompatActivity {
                     questionType = "boolean";
                 }
 
+                // saves difficulty as correct values for api submission
                 String difficulty = "";
                 if (txtDifficulty.getText().toString().equals("Easy")) {
                     difficulty = "easy";
@@ -114,6 +117,9 @@ public class CreateQuizActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(List<Question> questions) {
                         // TODO: Save Questions
+
+
+                        //startActivity(new Intent(getApplicationContext(), QuestionActivity.class));
 
                         ArrayAdapter arrayAdapter = new ArrayAdapter(CreateQuizActivity.this, android.R.layout.simple_list_item_1, questions);
                         lvQuizItems.setAdapter(arrayAdapter);

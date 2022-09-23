@@ -17,12 +17,13 @@ import java.util.List;
 
 public class CreateQuizActivity extends AppCompatActivity {
 
-    String[] categoryOptions;
-    String categoryId = "";
+    private String[] categoryOptions;
+    private String categoryId = "", questionType = "", difficulty = "", amount = "";
     private Button btnStartQuiz;
     private TextView txtNumberOfQuestions;
     private AutoCompleteTextView txtCategory, txtQuestionType, txtDifficulty;
     private ListView lvQuizItems;
+    private TriviaDataService triviaDataService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,8 +37,8 @@ public class CreateQuizActivity extends AppCompatActivity {
         txtDifficulty = findViewById(R.id.txtDifficulty);
         lvQuizItems = findViewById(R.id.lvQuizItems);
 
-        // Get all the categories
-        TriviaDataService triviaDataService = new TriviaDataService(CreateQuizActivity.this);
+        // Get all the categories from API
+        triviaDataService = new TriviaDataService(CreateQuizActivity.this);
         triviaDataService.getCategories(new TriviaDataService.CategoriesResponse() {
             @Override
             public void onError(String error) {
@@ -58,37 +59,25 @@ public class CreateQuizActivity extends AppCompatActivity {
             }
         });
 
+        // add all difficulty options
         String[] difficultyOptions = {"Any", "Easy", "Medium", "Hard"};
         ArrayAdapter<String> difficultyAdapter = new ArrayAdapter<String>(CreateQuizActivity.this, R.layout.list_item, difficultyOptions);
         txtDifficulty.setAdapter(difficultyAdapter);
 
+        // add all type options
         String[] questionTypeOptions = {"Any", "Multiple Choice", "True/False"};
         ArrayAdapter<String> questionTypeAdapter = new ArrayAdapter<String>(CreateQuizActivity.this, R.layout.list_item, questionTypeOptions);
         txtQuestionType.setAdapter(questionTypeAdapter);
 
+        // click button to start quiz
         btnStartQuiz.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String amount = txtNumberOfQuestions.getText().toString();
-                String categoryName = txtCategory.getText().toString();
-
-                // Get the correct categoryId for selected category
-                triviaDataService.getCategoryId(categoryName, new TriviaDataService.CategoryIdResponse() {
-                    @Override
-                    public void onError(String error) {
-                        Toast.makeText(CreateQuizActivity.this, error, Toast.LENGTH_SHORT).show();
-                    }
-
-                    @Override
-                    public void onResponse(String id) {
-                        categoryId = id;
-                    }
-                });
-
-                //TODO: check that selected category has enough questions
+                // gets the amount of questions
+                amount = txtNumberOfQuestions.getText().toString();
 
                 // saves questionType as correct values for api submission
-                String questionType = "";
+                //TODO: doesn't create quiz when "True/False" is selected (boolean)
                 if (txtQuestionType.getText().toString().equals("Multiple Choice")) {
                     questionType = "multiple";
                 }
@@ -97,7 +86,6 @@ public class CreateQuizActivity extends AppCompatActivity {
                 }
 
                 // saves difficulty as correct values for api submission
-                String difficulty = "";
                 if (txtDifficulty.getText().toString().equals("Easy")) {
                     difficulty = "easy";
                 }
@@ -108,23 +96,55 @@ public class CreateQuizActivity extends AppCompatActivity {
                     difficulty = "hard";
                 }
 
-                triviaDataService.getQuestions(amount, categoryId, difficulty, questionType, new TriviaDataService.QuestionsResponse() {
+                // Get the correct categoryId for selected category
+                String categoryName = txtCategory.getText().toString();
+                triviaDataService.getCategoryId(categoryName, new TriviaDataService.CategoryIdResponse() {
                     @Override
                     public void onError(String error) {
                         Toast.makeText(CreateQuizActivity.this, error, Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
-                    public void onResponse(List<Question> questions) {
-                        // TODO: Save Questions
-
-
-                        //startActivity(new Intent(getApplicationContext(), QuestionActivity.class));
-
-                        ArrayAdapter arrayAdapter = new ArrayAdapter(CreateQuizActivity.this, android.R.layout.simple_list_item_1, questions);
-                        lvQuizItems.setAdapter(arrayAdapter);
+                    public void onResponse(String id) {
+                        categoryId = id;
+                        //TODO: check that selected category has enough questions
+                        createQuiz();
                     }
                 });
+            }
+        });
+    }
+
+    private void createQuiz(){
+        triviaDataService.getQuestions(amount, categoryId, difficulty, questionType, new TriviaDataService.QuestionsResponse() {
+            @Override
+            public void onError(String error) {
+                Toast.makeText(CreateQuizActivity.this, error, Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onResponse(List<Question> questions) {
+                // Saves the questions returned from the API to DB
+                int quizId = 1;
+                try {
+                    quizId = ((TriviaDB) getApplicationContext()).getNextQuizId();
+                } catch (Exception ex) {
+                    //no-op
+                }
+
+                for (Question question: questions) {
+                    try {
+                        ((TriviaDB) getApplicationContext()).addQuestion(quizId, question.getCategory(), question.getType(), question.getDifficulty(), question.getQuestionString(),
+                                question.getCorrectAnswer(), question.getIncorrectAnswers());
+                    } catch (Exception ex) {
+                        // no-op
+                    }
+                }
+
+                // Starts the quiz
+                Intent intent = new Intent(getApplicationContext(), QuestionActivity.class);
+                intent.putExtra("quizId", quizId);
+                startActivity(intent);
             }
         });
     }

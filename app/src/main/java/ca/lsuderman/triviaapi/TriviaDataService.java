@@ -1,6 +1,7 @@
 package ca.lsuderman.triviaapi;
 
 import android.content.Context;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -44,7 +45,11 @@ public class TriviaDataService {
             url += "&type=" + type;
         }
 
-
+        Log.d("amount", amount);
+        Log.d("category", category);
+        Log.d("difficulty", difficulty);
+        Log.d("type", type);
+        Log.d("URL", url);
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override

@@ -25,6 +25,38 @@
             android:layout_height="wrap_content"
             android:text="Question X of X" />
 
+        <TextView
+            android:id="@+id/txtQuestion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Question goes here..." />
+
+        <RadioGroup
+            android:id="@+id/radAnswers"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <RadioButton
+                android:id="@+id/radAnswer1"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="test answer"/>
+            <RadioButton
+                android:id="@+id/radAnswer2"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="test answer 2"/>
+            <RadioButton
+                android:id="@+id/radAnswer3"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="test answer 3"/>
+            <RadioButton
+                android:id="@+id/radAnswer4"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="test answer 4"/>
+        </RadioGroup>
+
         <Button
             android:id="@+id/btnNextQuestion"
             android:layout_width="match_parent"

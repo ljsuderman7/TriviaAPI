@@ -10,10 +10,13 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.List;
+
 
 public class MainActivity extends AppCompatActivity {
 
     private Button btnGenerate;
+    private List<Question> questions;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

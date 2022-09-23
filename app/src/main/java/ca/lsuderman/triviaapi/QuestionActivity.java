@@ -2,6 +2,7 @@ package ca.lsuderman.triviaapi;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -18,7 +19,7 @@ public class QuestionActivity extends AppCompatActivity {
     private RadioButton radAnswer1, radAnswer2, radAnswer3, radAnswer4;
     private Button btnNextQuestion;
     private TextView txtQuestionNumber, txtQuestion;
-    private int quizId, currentQuestionId = 0;
+    private int currentQuestionId = 0;
     private String answerGiven = "";
     private List<Question> questions;
     private Question currentQuestion;
@@ -37,9 +38,11 @@ public class QuestionActivity extends AppCompatActivity {
         txtQuestionNumber = findViewById(R.id.txtQuestionNumber);
         txtQuestion = findViewById(R.id.txtQuestion);
 
-        quizId = getIntent().getExtras().getInt("quizId");
+        // gets all the questions that were created for the selected quiz
+        int quizId = getIntent().getExtras().getInt("quizId");
         questions = ((TriviaDB) getApplicationContext()).getAllQuestionsByQuizId(quizId);
 
+        // displays the first question
         displayCurrentQuestion();
 
         btnNextQuestion.setOnClickListener(new View.OnClickListener() {
@@ -59,28 +62,25 @@ public class QuestionActivity extends AppCompatActivity {
                 }
 
                 ((TriviaDB) getApplicationContext()).addQuestionAnswerGiven(answerGiven, currentQuestion.getQuestionId());
-                Log.d("Answer Given", answerGiven);
-                Log.d("Correct Answer", currentQuestion.getCorrectAnswer());
-                if (answerGiven.equals(currentQuestion.getCorrectAnswer())){
-                    Log.d("Got Correct Answer", "True");
-                }
-                else {
-                    Log.d("Got Correct Answer", "False");
-                }
 
                 currentQuestionId++;
-                // check if there is another question
+                // checks if there is another question
                 if (currentQuestionId < questions.size()){
+                    // displays next question
                     displayCurrentQuestion();
                     radAnswers.clearCheck();
                 }
                 else {
                     // display results
+                    Intent intent = new Intent(getApplicationContext(), QuizResultsActivity.class);
+                    intent.putExtra("quizId", quizId);
+                    startActivity(intent);
                 }
             }
         });
     }
 
+    // TODO: fix text for quotes and others
     private void displayCurrentQuestion() {
         currentQuestion = questions.get(currentQuestionId);
         txtQuestionNumber.setText("Question " + (currentQuestionId + 1) + " of " + questions.size() + ": " + currentQuestion.getCategory());
@@ -91,6 +91,8 @@ public class QuestionActivity extends AppCompatActivity {
         // TODO: put answers in random radButtons
         radAnswer1.setText(currentQuestion.getCorrectAnswer());
         radAnswer2.setText(incorrectAnswers.get(0));
+        // if there is at least 2 incorrect answers, then it is a multiple choice question.
+        // make options 3 and 4 available
         if (!incorrectAnswers.get(1).equals("")){
             radAnswer3.setText(incorrectAnswers.get(1));
             radAnswer4.setText(incorrectAnswers.get(2));

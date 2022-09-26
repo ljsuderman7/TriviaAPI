@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">TriviaAPI</string>
+    <string name="app_information">TriviaAPI lets you create quizzes from over 4000 questions in over 20 different categories</string>
 </resources>

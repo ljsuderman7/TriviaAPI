@@ -1,5 +1,6 @@
 package ca.lsuderman.triviaapi;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -21,6 +22,11 @@ public class QuizResultsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_quiz_results);
+
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setTitle("Quiz Results");
+        }
 
         btnHome = findViewById(R.id.btnHome);
         txtResult = findViewById(R.id.txtResult);

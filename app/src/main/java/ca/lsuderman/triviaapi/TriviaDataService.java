@@ -181,4 +181,6 @@ public class TriviaDataService {
 
     //TODO: check that there is enough questions in selected category
     //https://opentdb.com/api_count.php?category=CATEGORY_ID_HERE
+
+    //https://opentdb.com/api_count_global.php
 }

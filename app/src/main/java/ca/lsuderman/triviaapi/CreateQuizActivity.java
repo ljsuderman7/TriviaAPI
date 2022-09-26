@@ -1,5 +1,6 @@
 package ca.lsuderman.triviaapi;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -22,7 +23,6 @@ public class CreateQuizActivity extends AppCompatActivity {
     private Button btnStartQuiz;
     private TextView txtNumberOfQuestions;
     private AutoCompleteTextView txtCategory, txtQuestionType, txtDifficulty;
-    private ListView lvQuizItems;
     private TriviaDataService triviaDataService;
 
     @Override
@@ -30,12 +30,16 @@ public class CreateQuizActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_quiz);
 
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setTitle("Create New Quiz");
+        }
+
         btnStartQuiz = findViewById(R.id.btnStartQuiz);
         txtNumberOfQuestions = findViewById(R.id.txtNumberOfQuestions);
         txtCategory = findViewById(R.id.txtCategory);
         txtQuestionType = findViewById(R.id.txtQuestionType);
         txtDifficulty = findViewById(R.id.txtDifficulty);
-        lvQuizItems = findViewById(R.id.lvQuizItems);
 
         // Get all the categories from API
         triviaDataService = new TriviaDataService(CreateQuizActivity.this);
@@ -132,14 +136,11 @@ public class CreateQuizActivity extends AppCompatActivity {
                 }
 
                 for (Question question: questions) {
-
-                    //Log.d("CreateQuizActivity Question", question.toString());
-
                     try {
                         ((TriviaDB) getApplicationContext()).addQuestion(quizId, question.getCategory(), question.getType(), question.getDifficulty(), question.getQuestionString(),
                                 question.getCorrectAnswer(), question.getIncorrectAnswers());
                     } catch (Exception ex) {
-                        Log.d("Exception", ex.toString());
+                        // no-op
                     }
                 }
 

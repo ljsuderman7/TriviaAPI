@@ -20,20 +20,18 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/txtQuestionNumber"
+            android:id="@+id/txtQuestionCategory"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Question X of X"
-            android:textColor="#000000"
-            android:textSize="20sp" />
+            android:text="Category: "
+            android:textSize="16sp" />
 
         <TextView
             android:id="@+id/txtQuestion"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Question goes here..."
-            android:textColor="#000000"
-            android:textSize="20sp" />
+            android:textSize="16sp" />
 
         <RadioGroup
             android:id="@+id/radAnswers"

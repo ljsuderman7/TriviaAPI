@@ -1,10 +1,10 @@
 package ca.lsuderman.triviaapi;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RadioButton;
@@ -18,7 +18,7 @@ public class QuestionActivity extends AppCompatActivity {
     private RadioGroup radAnswers;
     private RadioButton radAnswer1, radAnswer2, radAnswer3, radAnswer4;
     private Button btnNextQuestion;
-    private TextView txtQuestionNumber, txtQuestion;
+    private TextView txtQuestionCategory, txtQuestion;
     private int currentQuestionId = 0;
     private String answerGiven = "";
     private List<Question> questions;
@@ -35,7 +35,7 @@ public class QuestionActivity extends AppCompatActivity {
         radAnswer3 = findViewById(R.id.radAnswer3);
         radAnswer4 = findViewById(R.id.radAnswer4);
         btnNextQuestion = findViewById(R.id.btnNextQuestion);
-        txtQuestionNumber = findViewById(R.id.txtQuestionNumber);
+        txtQuestionCategory = findViewById(R.id.txtQuestionCategory);
         txtQuestion = findViewById(R.id.txtQuestion);
 
         // gets all the questions that were created for the selected quiz
@@ -82,8 +82,17 @@ public class QuestionActivity extends AppCompatActivity {
 
     // TODO: fix text for quotes and others
     private void displayCurrentQuestion() {
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setTitle("Question #" + (currentQuestionId + 1));
+        }
+
+        if (currentQuestionId + 1 == questions.size()){
+            btnNextQuestion.setText("Finish Quiz");
+        }
+
         currentQuestion = questions.get(currentQuestionId);
-        txtQuestionNumber.setText("Question " + (currentQuestionId + 1) + " of " + questions.size() + ": " + currentQuestion.getCategory());
+        txtQuestionCategory.setText("Category: " + currentQuestion.getCategory());
         txtQuestion.setText(currentQuestion.getQuestionString());
 
         List<String> incorrectAnswers = currentQuestion.getIncorrectAnswers();

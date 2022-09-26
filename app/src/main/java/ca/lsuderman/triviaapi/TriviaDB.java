@@ -44,13 +44,13 @@ public class TriviaDB extends Application {
 
     public void addQuestion(int quizId, String category, String type, String difficulty, String questionString, String correctAnswer, List<String> incorrectAnswers) {
         String incorrectAnswer1 = incorrectAnswers.get(0);
-        String incorrectAnswer2 = incorrectAnswers.get(1);
-        String incorrectAnswer3 = incorrectAnswers.get(2);
+        String incorrectAnswer2 = "";
+        String incorrectAnswer3 = "";
 
-//        if (type.equals("multiple")){
-//            incorrectAnswer2 = incorrectAnswers.get(1);
-//            incorrectAnswer3 = incorrectAnswers.get(2);
-//        }
+        if (type.equals("multiple")){
+            incorrectAnswer2 = incorrectAnswers.get(1);
+            incorrectAnswer3 = incorrectAnswers.get(2);
+        }
 
         SQLiteDatabase db = helper.getWritableDatabase();
         db.execSQL("INSERT INTO tbl_question(quiz_id, category, type, difficulty, question_string, correct_answer, incorrect_answer_1, incorrect_answer_2, incorrect_answer_3) " +

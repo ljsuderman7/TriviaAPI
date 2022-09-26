@@ -25,6 +25,8 @@ public class TriviaDataService {
         this.context = context;
     }
 
+    //region Get Questions
+
     public interface QuestionsResponse {
         void onError(String error);
         void onResponse(List<Question> questions);
@@ -57,6 +59,8 @@ public class TriviaDataService {
                 try {
                     JSONArray results = response.getJSONArray("results");
 
+                    Log.d("Results", String.valueOf(results.length()));
+
                     for (int i = 0; i < results.length(); i++) {
                         JSONObject questionFromAPI = (JSONObject) results.get(i);
                         Question question = new Question();
@@ -74,6 +78,8 @@ public class TriviaDataService {
                         }
                         question.setIncorrectAnswers(incorrectAnswers);
 
+                        //Log.d("Question", question.toString());
+
                         questions.add(question);
                     }
                     questionsResponse.onResponse(questions);
@@ -89,6 +95,10 @@ public class TriviaDataService {
         });
         MySingleton.getInstance(context).addToRequestQueue(request);
     }
+
+    //endregion
+
+    //region Get All Categories
 
     public interface CategoriesResponse {
         void onError(String error);
@@ -128,6 +138,10 @@ public class TriviaDataService {
         MySingleton.getInstance(context).addToRequestQueue(request);
     }
 
+    //endregion
+
+    //region Get Chosen Category ID
+
     public interface CategoryIdResponse {
         void onError(String error);
         void onResponse(String id);
@@ -162,6 +176,8 @@ public class TriviaDataService {
         });
         MySingleton.getInstance(context).addToRequestQueue(request);
     }
+
+    //endregion
 
     //TODO: check that there is enough questions in selected category
     //https://opentdb.com/api_count.php?category=CATEGORY_ID_HERE

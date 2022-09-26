@@ -77,7 +77,6 @@ public class CreateQuizActivity extends AppCompatActivity {
                 amount = txtNumberOfQuestions.getText().toString();
 
                 // saves questionType as correct values for api submission
-                //TODO: doesn't create quiz when "True/False" is selected (boolean)
                 if (txtQuestionType.getText().toString().equals("Multiple Choice")) {
                     questionType = "multiple";
                 }
@@ -133,11 +132,14 @@ public class CreateQuizActivity extends AppCompatActivity {
                 }
 
                 for (Question question: questions) {
+
+                    //Log.d("CreateQuizActivity Question", question.toString());
+
                     try {
                         ((TriviaDB) getApplicationContext()).addQuestion(quizId, question.getCategory(), question.getType(), question.getDifficulty(), question.getQuestionString(),
                                 question.getCorrectAnswer(), question.getIncorrectAnswers());
                     } catch (Exception ex) {
-                        // no-op
+                        Log.d("Exception", ex.toString());
                     }
                 }
 

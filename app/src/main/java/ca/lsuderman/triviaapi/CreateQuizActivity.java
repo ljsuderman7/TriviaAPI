@@ -14,6 +14,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.material.textfield.TextInputLayout;
+
 import java.util.List;
 
 public class CreateQuizActivity extends AppCompatActivity {
@@ -24,6 +26,7 @@ public class CreateQuizActivity extends AppCompatActivity {
     private TextView txtNumberOfQuestions;
     private AutoCompleteTextView txtCategory, txtQuestionType, txtDifficulty;
     private TriviaDataService triviaDataService;
+    private TextInputLayout inlNumberOfQuestions;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +43,7 @@ public class CreateQuizActivity extends AppCompatActivity {
         txtCategory = findViewById(R.id.txtCategory);
         txtQuestionType = findViewById(R.id.txtQuestionType);
         txtDifficulty = findViewById(R.id.txtDifficulty);
+        inlNumberOfQuestions = findViewById(R.id.inlNumberOfQuestions);
 
         // Get all the categories from API
         triviaDataService = new TriviaDataService(CreateQuizActivity.this);
@@ -52,7 +56,7 @@ public class CreateQuizActivity extends AppCompatActivity {
             @Override
             public void onResponse(List<Category> categories) {
                 // TODO: Add "Any" to start of list without it taking a few clicks to load
-                categoryOptions = new String[categories.size()]; // + 1
+                categoryOptions = new String[categories.size()]; // + 1];
                 //categoryOptions[0] = "Any";
                 for (int i = 0; i < categories.size(); i++) {
                     categoryOptions[i] = categories.get(i).getName();
@@ -79,41 +83,53 @@ public class CreateQuizActivity extends AppCompatActivity {
             public void onClick(View view) {
                 // gets the amount of questions
                 amount = txtNumberOfQuestions.getText().toString();
+                int amountInt = 0;
 
-                // saves questionType as correct values for api submission
-                if (txtQuestionType.getText().toString().equals("Multiple Choice")) {
-                    questionType = "multiple";
-                }
-                else if (txtQuestionType.getText().toString().equals("True/False")) {
-                    questionType = "boolean";
+                if (!amount.equals("")){
+                    amountInt = Integer.parseInt(amount);
                 }
 
-                // saves difficulty as correct values for api submission
-                if (txtDifficulty.getText().toString().equals("Easy")) {
-                    difficulty = "easy";
-                }
-                else if (txtQuestionType.getText().toString().equals("Medium")) {
-                    difficulty = "medium";
-                }
-                else if (txtQuestionType.getText().toString().equals("hard")) {
-                    difficulty = "hard";
-                }
+                inlNumberOfQuestions.setError(null);
 
-                // Get the correct categoryId for selected category
-                String categoryName = txtCategory.getText().toString();
-                triviaDataService.getCategoryId(categoryName, new TriviaDataService.CategoryIdResponse() {
-                    @Override
-                    public void onError(String error) {
-                        Toast.makeText(CreateQuizActivity.this, error, Toast.LENGTH_SHORT).show();
+                if (amount.equals("")) {
+                    inlNumberOfQuestions.setError("Must have at least 1 question");
+                }
+                else if (amountInt > 50){
+                    inlNumberOfQuestions.setError("Cannot have more than 50 questions");
+                }
+                else {
+                    // saves questionType as correct values for api submission
+                    if (txtQuestionType.getText().toString().equals("Multiple Choice")) {
+                        questionType = "multiple";
+                    } else if (txtQuestionType.getText().toString().equals("True/False")) {
+                        questionType = "boolean";
                     }
 
-                    @Override
-                    public void onResponse(String id) {
-                        categoryId = id;
-                        //TODO: check that selected category has enough questions
-                        createQuiz();
+                    // saves difficulty as correct values for api submission
+                    if (txtDifficulty.getText().toString().equals("Easy")) {
+                        difficulty = "easy";
+                    } else if (txtQuestionType.getText().toString().equals("Medium")) {
+                        difficulty = "medium";
+                    } else if (txtQuestionType.getText().toString().equals("hard")) {
+                        difficulty = "hard";
                     }
-                });
+
+                    // Get the correct categoryId for selected category
+                    String categoryName = txtCategory.getText().toString();
+                    triviaDataService.getCategoryId(categoryName, new TriviaDataService.CategoryIdResponse() {
+                        @Override
+                        public void onError(String error) {
+                            Toast.makeText(CreateQuizActivity.this, error, Toast.LENGTH_SHORT).show();
+                        }
+
+                        @Override
+                        public void onResponse(String id) {
+                            categoryId = id;
+                            //TODO: check that selected category has enough questions
+                            createQuiz();
+                        }
+                    });
+                }
             }
         });
     }

@@ -23,7 +23,7 @@
             android:id="@+id/inlNumberOfQuestions"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Enter Number of Questions"
+            android:hint="Enter Number of Questions (Max 50)"
             app:endIconMode="clear_text"
             android:paddingBottom="10dp">
 
@@ -85,11 +85,19 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
-        <Button
-            android:id="@+id/btnStartQuiz"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Start Quiz!" />
+            android:layout_weight="1"
+            android:gravity="bottom"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btnStartQuiz"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Start Quiz!" />
+        </LinearLayout>
 
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

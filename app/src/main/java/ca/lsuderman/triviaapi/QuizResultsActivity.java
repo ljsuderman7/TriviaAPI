@@ -13,7 +13,7 @@ import java.util.List;
 
 public class QuizResultsActivity extends AppCompatActivity {
 
-    private Button btnHome;
+    private Button btnHome, btnRetakeQuiz;
     private TextView txtResult, txtDetails;
     private List<Question> questions;
     private int questionNumber = 1;
@@ -29,6 +29,7 @@ public class QuizResultsActivity extends AppCompatActivity {
         }
 
         btnHome = findViewById(R.id.btnHome);
+        btnRetakeQuiz = findViewById(R.id.btnRetakeQuiz);
         txtResult = findViewById(R.id.txtResult);
         txtDetails = findViewById(R.id.txtDetails);
 
@@ -57,6 +58,16 @@ public class QuizResultsActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(getApplicationContext(), MainActivity.class));
+            }
+        });
+
+        btnRetakeQuiz.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Restarts the quiz
+                Intent intent = new Intent(getApplicationContext(), QuestionActivity.class);
+                intent.putExtra("quizId", quizId);
+                startActivity(intent);
             }
         });
     }

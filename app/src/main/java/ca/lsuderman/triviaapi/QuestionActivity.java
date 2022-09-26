@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RadioButton;
@@ -12,12 +13,13 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import java.util.List;
+import java.util.Random;
 
 public class QuestionActivity extends AppCompatActivity {
 
     private RadioGroup radAnswers;
     private RadioButton radAnswer1, radAnswer2, radAnswer3, radAnswer4;
-    private Button btnNextQuestion;
+    private Button btnNextQuestion, btnPreviousQuestion;
     private TextView txtQuestionCategory, txtQuestion;
     private int currentQuestionId = 0;
     private String answerGiven = "";
@@ -35,6 +37,7 @@ public class QuestionActivity extends AppCompatActivity {
         radAnswer3 = findViewById(R.id.radAnswer3);
         radAnswer4 = findViewById(R.id.radAnswer4);
         btnNextQuestion = findViewById(R.id.btnNextQuestion);
+        btnPreviousQuestion = findViewById(R.id.btnPreviousQuestion);
         txtQuestionCategory = findViewById(R.id.txtQuestionCategory);
         txtQuestion = findViewById(R.id.txtQuestion);
 
@@ -45,6 +48,7 @@ public class QuestionActivity extends AppCompatActivity {
         // displays the first question
         displayCurrentQuestion();
 
+        // goes to the next question
         btnNextQuestion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -78,40 +82,79 @@ public class QuestionActivity extends AppCompatActivity {
                 }
             }
         });
+
+        // goes to the previous question
+        btnPreviousQuestion.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                currentQuestionId--;
+                displayCurrentQuestion();
+                radAnswers.clearCheck();
+                //TODO: checks the correct radio button for answer previously given
+                if (radAnswer1.getText().equals(currentQuestion.getAnswerGiven())) {
+                    Log.d("Radio Button", "1");
+                    radAnswer1.setChecked(true);
+                }
+                else if (radAnswer2.getText().equals(currentQuestion.getAnswerGiven())) {
+                    Log.d("Radio Button", "2");
+                    radAnswer2.setChecked(true);
+                }
+                else if (radAnswer3.getText().equals(currentQuestion.getAnswerGiven())) {
+                    Log.d("Radio Button", "3");
+                    radAnswer3.setChecked(true);
+                }
+                else if (radAnswer4.getText().equals(currentQuestion.getAnswerGiven())) {
+                    Log.d("Radio Button", "4");
+                    radAnswer4.setChecked(true);
+                }
+            }
+        });
     }
 
     // TODO: fix text for quotes and others
     private void displayCurrentQuestion() {
         ActionBar actionBar = getSupportActionBar();
+        // sets action bar title to the question number
         if (actionBar != null) {
             actionBar.setTitle("Question #" + (currentQuestionId + 1));
         }
 
+        // disables btnPreviousQuestion if it is the first question
+        if (currentQuestionId == 0) {
+            btnPreviousQuestion.setEnabled(false);
+        }
+        else {
+            btnPreviousQuestion.setEnabled(true);
+        }
+
         if (currentQuestionId + 1 == questions.size()){
             btnNextQuestion.setText("Finish Quiz");
+        }
+        else {
+            btnNextQuestion.setText("Next Question");
         }
 
         currentQuestion = questions.get(currentQuestionId);
         txtQuestionCategory.setText("Category: " + currentQuestion.getCategory());
         txtQuestion.setText(currentQuestion.getQuestionString());
 
-        List<String> incorrectAnswers = currentQuestion.getIncorrectAnswers();
+        List<String> answers = currentQuestion.getIncorrectAnswers();
+        answers.add(currentQuestion.getCorrectAnswer());
 
-        // TODO: put answers in random radButtons
-        radAnswer1.setText(currentQuestion.getCorrectAnswer());
-        radAnswer2.setText(incorrectAnswers.get(0));
-        // if there is at least 2 incorrect answers, then it is a multiple choice question.
-        // make options 3 and 4 available
-        if (!incorrectAnswers.get(1).equals("")){
-            radAnswer3.setText(incorrectAnswers.get(1));
-            radAnswer4.setText(incorrectAnswers.get(2));
+        Random random = new Random();
 
-            radAnswer3.setVisibility(View.VISIBLE);
-            radAnswer4.setVisibility(View.VISIBLE);
-        }
-        else {
-            radAnswer3.setVisibility(View.GONE);
-            radAnswer4.setVisibility(View.GONE);
-        }
+        int firstAnswer = random.nextInt(4);
+        radAnswer1.setText(answers.get(firstAnswer));
+        answers.remove(firstAnswer);
+
+        int secondAnswer = random.nextInt(3);
+        radAnswer2.setText(answers.get(secondAnswer));
+        answers.remove(secondAnswer);
+
+        int thirdAnswer = random.nextInt(2);
+        radAnswer3.setText(answers.get(thirdAnswer));
+        answers.remove(thirdAnswer);
+
+        radAnswer4.setText(answers.get(0));
     }
 }

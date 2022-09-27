@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
         btnViewQuizzes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // TODO: create activity
+                startActivity(new Intent(getApplicationContext(), ViewQuizzesActivity.class));
             }
         });
     }

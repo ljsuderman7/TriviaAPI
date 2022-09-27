@@ -17,6 +17,9 @@
         android:theme="@style/Theme.TriviaAPI"
         tools:targetApi="31">
         <activity
+            android:name=".ViewQuizzesActivity"
+            android:exported="false" />
+        <activity
             android:name=".QuizResultsActivity"
             android:exported="false" />
         <activity

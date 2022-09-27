@@ -141,6 +141,9 @@ public class QuestionActivity extends AppCompatActivity {
         List<String> answers = currentQuestion.getIncorrectAnswers();
         answers.add(currentQuestion.getCorrectAnswer());
 
+
+        // puts answers in random radio buttons
+        //TODO: fix true/false
         Random random = new Random();
 
         int firstAnswer = random.nextInt(4);

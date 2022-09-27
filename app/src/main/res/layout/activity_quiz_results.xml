@@ -51,18 +51,18 @@
             android:orientation="horizontal">
 
             <Button
-                android:id="@+id/btnHome"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Go home" />
-
-            <Button
                 android:id="@+id/btnRetakeQuiz"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Retake Quiz" />
+
+            <Button
+                android:id="@+id/btnHome"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Go home" />
         </LinearLayout>
 
     </LinearLayout>

@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import java.text.DecimalFormat;
 import java.util.List;
 
 public class QuizResultsActivity extends AppCompatActivity {
@@ -17,6 +18,7 @@ public class QuizResultsActivity extends AppCompatActivity {
     private TextView txtResult, txtDetails;
     private List<Question> questions;
     private int questionNumber = 1;
+    private static final DecimalFormat df = new DecimalFormat("0.00");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +52,7 @@ public class QuizResultsActivity extends AppCompatActivity {
         }
 
         double average = (double) correctAnswers / (double) questions.size() * 100.0;
-        txtResult.setText("You got " + correctAnswers + " out of " + questions.size() + " correct (" + average + "%)");
+        txtResult.setText("You got " + correctAnswers + " out of " + questions.size() + " correct (" + df.format(average) + "%)");
 
         txtDetails.setText(details);
 

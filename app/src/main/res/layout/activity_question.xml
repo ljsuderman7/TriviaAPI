@@ -23,6 +23,7 @@
             android:id="@+id/txtQuestionCategory"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/montserrat_alternates"
             android:text="Category: "
             android:textSize="16sp" />
 
@@ -30,6 +31,7 @@
             android:id="@+id/txtQuestion"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/montserrat_alternates"
             android:text="Question goes here..."
             android:textSize="16sp" />
 
@@ -37,26 +39,34 @@
             android:id="@+id/radAnswers"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+
             <RadioButton
                 android:id="@+id/radAnswer1"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:text="test answer"/>
+                android:fontFamily="@font/montserrat_alternates_bold"
+                android:text="test answer" />
+
             <RadioButton
                 android:id="@+id/radAnswer2"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:text="test answer 2"/>
+                android:fontFamily="@font/montserrat_alternates_bold"
+                android:text="test answer 2" />
+
             <RadioButton
                 android:id="@+id/radAnswer3"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:text="test answer 3"/>
+                android:fontFamily="@font/montserrat_alternates_bold"
+                android:text="test answer 3" />
+
             <RadioButton
                 android:id="@+id/radAnswer4"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:text="test answer 4"/>
+                android:fontFamily="@font/montserrat_alternates_bold"
+                android:text="test answer 4" />
         </RadioGroup>
 
         <LinearLayout
@@ -71,14 +81,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Previous Question" />
+                android:fontFamily="@font/montserrat_alternates_bold"
+                android:text="Previous" />
 
             <Button
                 android:id="@+id/btnNextQuestion"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Next Question" />
+                android:fontFamily="@font/montserrat_alternates_bold"
+                android:text="Next" />
         </LinearLayout>
 
     </LinearLayout>

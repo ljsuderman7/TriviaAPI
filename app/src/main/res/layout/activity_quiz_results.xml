@@ -23,6 +23,7 @@
             android:id="@+id/txtResult"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/montserrat_alternates"
             android:text="Quiz Results" />
 
         <ScrollView
@@ -38,6 +39,7 @@
                     android:id="@+id/txtDetails"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat_alternates"
                     android:text="Questions" />
 
             </LinearLayout>
@@ -55,6 +57,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:fontFamily="@font/montserrat_alternates_bold"
                 android:text="Retake Quiz" />
 
             <Button
@@ -62,6 +65,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:fontFamily="@font/montserrat_alternates_bold"
                 android:text="Go home" />
         </LinearLayout>
 

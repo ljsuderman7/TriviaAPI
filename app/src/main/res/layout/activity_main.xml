@@ -23,6 +23,7 @@
             android:id="@+id/textView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/montserrat_alternates"
             android:text="Welcome to TriviaAPI!"
             android:textAlignment="center"
             android:textSize="24sp" />
@@ -31,9 +32,10 @@
             android:id="@+id/textView2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/montserrat_alternates"
+            android:paddingBottom="10dp"
             android:text="@string/app_information"
-            android:textSize="16sp"
-            android:paddingBottom="10dp"/>
+            android:textSize="16sp" />
 
         <com.google.android.material.divider.MaterialDivider
             android:layout_width="match_parent"
@@ -43,6 +45,7 @@
             android:id="@+id/textView5"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/montserrat_alternates"
             android:paddingTop="10dp"
             android:text="Your Stats:" />
 
@@ -62,6 +65,7 @@
                     android:id="@+id/textView3"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat_alternates"
                     android:text="Questions Answered"
                     android:textAlignment="center" />
 
@@ -69,6 +73,7 @@
                     android:id="@+id/txtQuestionsAnswered"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat_alternates_bold"
                     android:text="XX"
                     android:textAlignment="center"
                     android:textSize="34sp" />
@@ -84,6 +89,7 @@
                     android:id="@+id/textView4"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat_alternates"
                     android:text="Quizzes Taken"
                     android:textAlignment="center" />
 
@@ -91,6 +97,7 @@
                     android:id="@+id/txtTotalQuizzes"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat_alternates_bold"
                     android:text="XX"
                     android:textAlignment="center"
                     android:textSize="34sp" />
@@ -113,6 +120,7 @@
                     android:id="@+id/textView6"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat_alternates"
                     android:text="Average of all Quizzes"
                     android:textAlignment="center" />
 
@@ -120,6 +128,7 @@
                     android:id="@+id/txtAllAverage"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat_alternates_bold"
                     android:text="XX %"
                     android:textAlignment="center"
                     android:textSize="34sp" />
@@ -135,6 +144,7 @@
                     android:id="@+id/textView8"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat_alternates"
                     android:text="Perfect Quizzes"
                     android:textAlignment="center" />
 
@@ -142,6 +152,7 @@
                     android:id="@+id/txtPerfectQuizzes"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat_alternates_bold"
                     android:text="XX"
                     android:textAlignment="center"
                     android:textSize="34sp" />
@@ -158,15 +169,17 @@
 
             <Button
                 android:id="@+id/btnViewQuizzes"
+                style="?attr/materialButtonOutlinedStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="View Previous Quizzes"
-                style="?attr/materialButtonOutlinedStyle" />
+                android:fontFamily="@font/montserrat_alternates_bold"
+                android:text="View Previous Quizzes" />
 
             <Button
                 android:id="@+id/btnGenerate"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/montserrat_alternates_bold"
                 android:text="Create New Quiz" />
         </LinearLayout>
 

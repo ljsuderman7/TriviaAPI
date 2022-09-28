@@ -4,7 +4,10 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.icu.text.DateTimePatternGenerator;
+import android.icu.text.MeasureFormat;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -52,7 +55,9 @@ public class ViewQuizzesActivity extends AppCompatActivity {
             quizLayout.setOrientation(LinearLayout.VERTICAL);
 
             btnRetake.setText("Retake Test");
-            btnRetake.setEnabled(true);
+//            btnRetake.setBackgroundColor(R.color.purple_500);
+//            btnRetake.setTextColor(R.color.white);
+
 
             btnRetake.setOnClickListener(new View.OnClickListener() {
                 @Override

@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -20,6 +21,7 @@ public class MainActivity extends AppCompatActivity {
 
     private Button btnGenerate, btnViewQuizzes;
     private TextView txtTotalQuizzes, txtAllAverage, txtPerfectQuizzes, txtQuestionsAnswered;
+    private LinearLayout llStats;
     private List<Question> questions;
     private static final DecimalFormat df = new DecimalFormat("0.00");
 
@@ -39,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
         txtAllAverage = findViewById(R.id.txtAllAverage);
         txtPerfectQuizzes = findViewById(R.id.txtPerfectQuizzes);
         txtQuestionsAnswered = findViewById(R.id.txtQuestionsAnswered);
+        llStats = findViewById(R.id.llStats);
 
         //TriviaDataService triviaDataService = new TriviaDataService(MainActivity.this);
 
@@ -50,18 +53,25 @@ public class MainActivity extends AppCompatActivity {
             // no-op
         }
 
-        // total number of questions answered
-        txtQuestionsAnswered.setText(String.valueOf(questions.size()));
+        if (questions.size() > 0) {
+            // total number of questions answered
+            txtQuestionsAnswered.setText(String.valueOf(questions.size()));
 
-        // total number of quizzes taken
-        txtTotalQuizzes.setText(String.valueOf(totalQuizzes));
+            // total number of quizzes taken
+            txtTotalQuizzes.setText(String.valueOf(totalQuizzes));
 
-        // total number of perfect quizzes
-        txtPerfectQuizzes.setText(getPerfectQuizzes(totalQuizzes));
+            // total number of perfect quizzes
+            txtPerfectQuizzes.setText(getPerfectQuizzes(totalQuizzes));
 
-        // average of all quizzes
-        double average = getAllAverage();
-        txtAllAverage.setText(df.format(average) + "%");
+            // average of all quizzes
+            double average = getAllAverage();
+            txtAllAverage.setText(df.format(average) + "%");
+
+            llStats.setVisibility(View.VISIBLE);
+        }
+        else {
+            llStats.setVisibility(View.GONE);
+        }
 
         btnGenerate.setOnClickListener(new View.OnClickListener() {
             @Override

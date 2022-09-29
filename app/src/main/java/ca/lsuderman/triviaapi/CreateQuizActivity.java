@@ -58,8 +58,7 @@ public class CreateQuizActivity extends AppCompatActivity {
 
             @Override
             public void onResponse(List<Category> categories) {
-                // TODO: Add "Any" to start of list without it taking a few clicks to load
-                categoryOptions = new String[categories.size()]; // + 1];
+                categoryOptions = new String[categories.size()];
                 //categoryOptions[0] = "Any";
                 for (int i = 0; i < categories.size(); i++) {
                     categoryOptions[i] = categories.get(i).getName();

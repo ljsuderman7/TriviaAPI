@@ -3,24 +3,29 @@ package ca.lsuderman.triviaapi;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.icu.text.DateTimePatternGenerator;
 import android.icu.text.MeasureFormat;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.android.material.card.MaterialCardView;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class ViewQuizzesActivity extends AppCompatActivity {
 
-    private LinearLayout llQuizzes;
+    private LinearLayout llQuizzes, llDeleteButton;
+    private Button btnDeleteAllQuizzes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +39,8 @@ public class ViewQuizzesActivity extends AppCompatActivity {
         }
 
         llQuizzes = findViewById(R.id.llQuizzes);
+        llDeleteButton = findViewById(R.id.llDeleteButton);
+        btnDeleteAllQuizzes = findViewById(R.id.btnDeleteAllQuizzes);
 
         int totalQuizzes = 0;
 
@@ -45,6 +52,9 @@ public class ViewQuizzesActivity extends AppCompatActivity {
         }
 
         for (int i = 1; i <= totalQuizzes; i++) {
+
+            //region Works but looks back
+
             int quizId = i;
             LinearLayout quizLayout = new LinearLayout(ViewQuizzesActivity.this);
             LinearLayout detailsLayout = new LinearLayout(ViewQuizzesActivity.this);
@@ -90,7 +100,27 @@ public class ViewQuizzesActivity extends AppCompatActivity {
 
             quizLayout.addView(detailsLayout);
             llQuizzes.addView(quizLayout);
+
+            llQuizzes.removeView(llDeleteButton);
+            llQuizzes.addView(llDeleteButton);
+            llDeleteButton.setVisibility(View.VISIBLE);
+
+            //endregion
         }
+
+        // delete all quizzes
+        btnDeleteAllQuizzes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    ((TriviaDB) getApplicationContext()).deleteAllQuestions();
+                } catch (Exception exception) {
+                    Log.d("Exception", exception.toString());
+                }
+
+                llQuizzes.removeAllViews();
+            }
+        });
     }
 
     @Override

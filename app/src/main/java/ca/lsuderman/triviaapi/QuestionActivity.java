@@ -141,23 +141,38 @@ public class QuestionActivity extends AppCompatActivity {
         List<String> answers = currentQuestion.getIncorrectAnswers();
         answers.add(currentQuestion.getCorrectAnswer());
 
+        // if the seconds answer in answers is "", then it is a true/false. so remove the second and third incorrect answers from answers
+        if (answers.get(1).equals("")){
+            answers.remove(1);
+            answers.remove(1);
+        }
 
         // puts answers in random radio buttons
-        //TODO: fix true/false
         Random random = new Random();
 
-        int firstAnswer = random.nextInt(4);
+        int numberOfAnswers = answers.size();
+
+        int firstAnswer = random.nextInt(numberOfAnswers);
         radAnswer1.setText(answers.get(firstAnswer));
         answers.remove(firstAnswer);
 
-        int secondAnswer = random.nextInt(3);
+        int secondAnswer = random.nextInt(numberOfAnswers - 1);
         radAnswer2.setText(answers.get(secondAnswer));
         answers.remove(secondAnswer);
 
-        int thirdAnswer = random.nextInt(2);
-        radAnswer3.setText(answers.get(thirdAnswer));
-        answers.remove(thirdAnswer);
+        if (numberOfAnswers > 2) {
+            int thirdAnswer = random.nextInt(numberOfAnswers - 2);
+            radAnswer3.setText(answers.get(thirdAnswer));
+            answers.remove(thirdAnswer);
 
-        radAnswer4.setText(answers.get(0));
+            radAnswer4.setText(answers.get(0));
+
+            radAnswer3.setVisibility(View.VISIBLE);
+            radAnswer4.setVisibility(View.VISIBLE);
+        }
+        else{
+            radAnswer3.setVisibility(View.GONE);
+            radAnswer4.setVisibility(View.GONE);
+        }
     }
 }

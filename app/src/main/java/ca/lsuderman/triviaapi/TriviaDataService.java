@@ -68,17 +68,21 @@ public class TriviaDataService {
                         question.setCategory(questionFromAPI.getString("category"));
                         question.setType(questionFromAPI.getString("type"));
                         question.setDifficulty(questionFromAPI.getString("difficulty"));
-                        question.setQuestionString(questionFromAPI.getString("question"));
-                        question.setCorrectAnswer(questionFromAPI.getString("correct_answer"));
+                        question.setQuestionString(questionFromAPI.getString("question").replace("&quot;", "\"")
+                                                                                                .replace("&amp;", "&")
+                                                                                                .replace("#039;", "\'"));
+                        question.setCorrectAnswer(questionFromAPI.getString("correct_answer").replace("&quot;", "\"")
+                                                                                                    .replace("&amp;", "&")
+                                                                                                    .replace("#039;", "\'"));
 
                         JSONArray incorrectAnswersJson = questionFromAPI.getJSONArray("incorrect_answers");
                         List<String> incorrectAnswers = new ArrayList<>();
                         for (int j = 0; j < incorrectAnswersJson.length(); j++) {
-                            incorrectAnswers.add(incorrectAnswersJson.getString(j));
+                            incorrectAnswers.add(incorrectAnswersJson.getString(j).replace("&quot;", "\"")
+                                                                                    .replace("&amp;", "&")
+                                                                                    .replace("#039;", "\'"));
                         }
                         question.setIncorrectAnswers(incorrectAnswers);
-
-                        //Log.d("Question", question.toString());
 
                         questions.add(question);
                     }

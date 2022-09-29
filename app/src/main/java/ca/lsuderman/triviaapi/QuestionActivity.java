@@ -111,7 +111,6 @@ public class QuestionActivity extends AppCompatActivity {
         });
     }
 
-    // TODO: fix text for quotes and others
     private void displayCurrentQuestion() {
         ActionBar actionBar = getSupportActionBar();
         // sets action bar title to the question number

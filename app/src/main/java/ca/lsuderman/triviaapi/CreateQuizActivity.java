@@ -16,6 +16,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.material.snackbar.BaseTransientBottomBar;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.List;
@@ -103,16 +105,19 @@ public class CreateQuizActivity extends AppCompatActivity {
                     // saves questionType as correct values for api submission
                     if (txtQuestionType.getText().toString().equals("Multiple Choice")) {
                         questionType = "multiple";
-                    } else if (txtQuestionType.getText().toString().equals("True/False")) {
+                    }
+                    else if (txtQuestionType.getText().toString().equals("True/False")) {
                         questionType = "boolean";
                     }
 
                     // saves difficulty as correct values for api submission
                     if (txtDifficulty.getText().toString().equals("Easy")) {
                         difficulty = "easy";
-                    } else if (txtQuestionType.getText().toString().equals("Medium")) {
+                    }
+                    else if (txtDifficulty.getText().toString().equals("Medium")) {
                         difficulty = "medium";
-                    } else if (txtQuestionType.getText().toString().equals("hard")) {
+                    }
+                    else if (txtDifficulty.getText().toString().equals("Hard")) {
                         difficulty = "hard";
                     }
 
@@ -127,8 +132,38 @@ public class CreateQuizActivity extends AppCompatActivity {
                         @Override
                         public void onResponse(String id) {
                             categoryId = id;
-                            //TODO: check that selected category has enough questions
-                            createQuiz();
+
+                            // if a category has been chosen, check to see if there are enough questions for the chosen difficulty
+                            if (!id.equals("")) {
+                                triviaDataService.isEnoughQuestions(amount, categoryId, difficulty, new TriviaDataService.EnoughQuestionsResponse() {
+                                    @Override
+                                    public void onError(String error) {
+                                        Toast.makeText(CreateQuizActivity.this, error, Toast.LENGTH_SHORT).show();
+                                    }
+
+                                    @Override
+                                    public void onResponse(boolean enoughQuestions, int totNumberOfQuestions) {
+                                        if (enoughQuestions) {
+                                            createQuiz();
+                                        }
+                                        else {
+                                            Snackbar.make(view, "There are only " + totNumberOfQuestions + " available questions for \""
+                                                    + categoryName + "\" category with \""
+                                                    + difficulty + "\" difficulty", BaseTransientBottomBar.LENGTH_LONG)
+                                                    .setTextMaxLines(3)
+                                                    .setAction("Set to " + totNumberOfQuestions, new View.OnClickListener() {
+                                                @Override
+                                                public void onClick(View view) {
+                                                    txtNumberOfQuestions.setText(String.valueOf(totNumberOfQuestions));
+                                                }
+                                            }).show();
+                                        }
+                                    }
+                                });
+                            }
+                            else {
+                                createQuiz();
+                            }
                         }
                     });
                 }

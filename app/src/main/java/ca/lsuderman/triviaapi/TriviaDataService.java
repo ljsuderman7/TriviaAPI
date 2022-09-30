@@ -47,19 +47,11 @@ public class TriviaDataService {
             url += "&type=" + type;
         }
 
-        Log.d("amount", amount);
-        Log.d("category", category);
-        Log.d("difficulty", difficulty);
-        Log.d("type", type);
-        Log.d("URL", url);
-
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
                     JSONArray results = response.getJSONArray("results");
-
-                    Log.d("Results", String.valueOf(results.length()));
 
                     for (int i = 0; i < results.length(); i++) {
                         JSONObject questionFromAPI = (JSONObject) results.get(i);
@@ -87,7 +79,8 @@ public class TriviaDataService {
                         questions.add(question);
                     }
                     questionsResponse.onResponse(questions);
-                } catch (JSONException e) {
+                }
+                catch (JSONException e) {
                     e.printStackTrace();
                 }
             }
@@ -183,8 +176,64 @@ public class TriviaDataService {
 
     //endregion
 
-    //TODO: check that there is enough questions in selected category
-    //https://opentdb.com/api_count.php?category=CATEGORY_ID_HERE
+    //region Enough questions in category
+
+    public interface EnoughQuestionsResponse {
+        void onError(String error);
+        void onResponse(boolean enoughQuestions, int numberOfQuestions);
+    }
+
+    public void isEnoughQuestions(String amount, String id, String difficulty, EnoughQuestionsResponse enoughQuestionsResponse){
+        String url = "https://opentdb.com/api_count.php?category=" + id;
+        int requestedNumberOfQuestions = Integer.parseInt(amount);
+
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    JSONObject categoryNumberOfQuestions = response.getJSONObject("category_question_count");
+
+                    int totalNumberOfQuestions = 0;
+
+                    if (difficulty.equals("easy")) {
+                        totalNumberOfQuestions = categoryNumberOfQuestions.getInt("total_easy_question_count");
+                    }
+                    else if (difficulty.equals("medium")) {
+                        totalNumberOfQuestions = categoryNumberOfQuestions.getInt("total_medium_question_count");
+                    }
+                    else if (difficulty.equals("hard")) {
+                        totalNumberOfQuestions = categoryNumberOfQuestions.getInt("total_hard_question_count");
+                    }
+                    else {
+                        totalNumberOfQuestions = categoryNumberOfQuestions.getInt("total_question_count");
+                    }
+
+                    Log.d("totalNumberOfQuestions", String.valueOf(totalNumberOfQuestions));
+                    Log.d("requestedNumberOfQuestions", String.valueOf(requestedNumberOfQuestions));
+
+                    if (totalNumberOfQuestions >= requestedNumberOfQuestions) {
+                        enoughQuestionsResponse.onResponse(true, totalNumberOfQuestions);
+                        Log.d("Enough Questions", "True");
+                    }
+                    else {
+                        enoughQuestionsResponse.onResponse(false, totalNumberOfQuestions);
+                        Log.d("Enough Questions", "False");
+                    }
+                }
+                catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                enoughQuestionsResponse.onError("Something went wrong");
+            }
+        });
+        MySingleton.getInstance(context).addToRequestQueue(request);
+    }
+
+    //endregion
 
     //https://opentdb.com/api_count_global.php
 }

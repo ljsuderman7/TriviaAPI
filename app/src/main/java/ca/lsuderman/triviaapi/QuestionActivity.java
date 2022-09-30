@@ -12,6 +12,9 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import com.google.android.material.snackbar.BaseTransientBottomBar;
+import com.google.android.material.snackbar.Snackbar;
+
 import java.util.List;
 import java.util.Random;
 
@@ -21,7 +24,7 @@ public class QuestionActivity extends AppCompatActivity {
     private RadioButton radAnswer1, radAnswer2, radAnswer3, radAnswer4;
     private Button btnNextQuestion, btnPreviousQuestion;
     private TextView txtQuestionCategory, txtQuestion;
-    private int currentQuestionId = 0;
+    private int currentQuestionId = 0, quizId;
     private String answerGiven = "";
     private List<Question> questions;
     private Question currentQuestion;
@@ -42,7 +45,7 @@ public class QuestionActivity extends AppCompatActivity {
         txtQuestion = findViewById(R.id.txtQuestion);
 
         // gets all the questions that were created for the selected quiz
-        int quizId = getIntent().getExtras().getInt("quizId");
+        quizId = getIntent().getExtras().getInt("quizId");
         questions = ((TriviaDB) getApplicationContext()).getAllQuestionsByQuizId(quizId);
 
         // displays the first question
@@ -54,31 +57,22 @@ public class QuestionActivity extends AppCompatActivity {
             public void onClick(View view) {
                 if (radAnswer1.isChecked()) {
                     answerGiven = radAnswer1.getText().toString();
+                    selectAnswer();
                 }
                 else if (radAnswer2.isChecked()){
                     answerGiven = radAnswer2.getText().toString();
+                    selectAnswer();
                 }
                 else if (radAnswer3.isChecked()){
                     answerGiven = radAnswer3.getText().toString();
+                    selectAnswer();
                 }
                 else if (radAnswer4.isChecked()){
                     answerGiven = radAnswer4.getText().toString();
-                }
-
-                ((TriviaDB) getApplicationContext()).addQuestionAnswerGiven(answerGiven, currentQuestion.getQuestionId());
-
-                currentQuestionId++;
-                // checks if there is another question
-                if (currentQuestionId < questions.size()){
-                    // displays next question
-                    displayCurrentQuestion();
-                    radAnswers.clearCheck();
+                    selectAnswer();
                 }
                 else {
-                    // display results
-                    Intent intent = new Intent(getApplicationContext(), QuizResultsActivity.class);
-                    intent.putExtra("quizId", quizId);
-                    startActivity(intent);
+                    Snackbar.make(view, "Select an answer", BaseTransientBottomBar.LENGTH_SHORT).show();
                 }
             }
         });
@@ -172,6 +166,29 @@ public class QuestionActivity extends AppCompatActivity {
         else{
             radAnswer3.setVisibility(View.GONE);
             radAnswer4.setVisibility(View.GONE);
+        }
+    }
+
+    private void selectAnswer() {
+        try {
+            ((TriviaDB) getApplicationContext()).addQuestionAnswerGiven(answerGiven, currentQuestion.getQuestionId());
+        }
+        catch (Exception e) {
+            // no-op
+        }
+
+        currentQuestionId++;
+        // checks if there is another question
+        if (currentQuestionId < questions.size()){
+            // displays next question
+            displayCurrentQuestion();
+            radAnswers.clearCheck();
+        }
+        else {
+            // display results
+            Intent intent = new Intent(getApplicationContext(), QuizResultsActivity.class);
+            intent.putExtra("quizId", quizId);
+            startActivity(intent);
         }
     }
 }

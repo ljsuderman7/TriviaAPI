@@ -156,6 +156,7 @@
 
                     <TextView
                         android:id="@+id/txtPerfectQuizzes"
+                        android:paddingBottom="10dp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/montserrat_alternates_bold"
@@ -164,6 +165,31 @@
                         android:textSize="34sp" />
 
                 </LinearLayout>
+            </LinearLayout>
+
+            <com.google.android.material.divider.MaterialDivider
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/textView7"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat_alternates"
+                    android:paddingTop="10dp"
+                    android:text="Latest Quiz:" />
+
+                <TextView
+                    android:id="@+id/txtLatestQuiz"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat_alternates"
+                    android:text="INFO XX" />
             </LinearLayout>
 
         </LinearLayout>

@@ -34,16 +34,20 @@ public class TriviaDataService {
     public void getQuestions(String amount, String category, String difficulty, String type, QuestionsResponse questionsResponse){
         List<Question> questions = new ArrayList<>();
 
+        // default URL that just includes amount of questions
         String url = "https://opentdb.com/api.php?amount=" + amount;
+        // if there is a category, add it to the url
         if (!category.equals("")){
             url += "&category=" + category;
         }
 
-        if (!difficulty.equals("")){
+        //if difficulty isn't "Any", add it to the url
+        if (!difficulty.equals("") && !difficulty.equals("Any")){
             url += "&difficulty=" + difficulty;
         }
 
-        if (!type.equals("")){
+        //if question typ isn't "Any", add it to the url
+        if (!type.equals("") && !type.equals("Any")){
             url += "&type=" + type;
         }
 
@@ -51,8 +55,10 @@ public class TriviaDataService {
             @Override
             public void onResponse(JSONObject response) {
                 try {
+                    // retrieves all the questions returned from API
                     JSONArray results = response.getJSONArray("results");
 
+                    // saves each individual question
                     for (int i = 0; i < results.length(); i++) {
                         JSONObject questionFromAPI = (JSONObject) results.get(i);
                         Question question = new Question();
@@ -60,19 +66,13 @@ public class TriviaDataService {
                         question.setCategory(questionFromAPI.getString("category"));
                         question.setType(questionFromAPI.getString("type"));
                         question.setDifficulty(questionFromAPI.getString("difficulty"));
-                        question.setQuestionString(questionFromAPI.getString("question").replace("&quot;", "\"")
-                                                                                                .replace("&amp;", "&")
-                                                                                                .replace("#039;", "\'"));
-                        question.setCorrectAnswer(questionFromAPI.getString("correct_answer").replace("&quot;", "\"")
-                                                                                                    .replace("&amp;", "&")
-                                                                                                    .replace("#039;", "\'"));
+                        question.setQuestionString(questionFromAPI.getString("question"));
+                        question.setCorrectAnswer(questionFromAPI.getString("correct_answer"));
 
                         JSONArray incorrectAnswersJson = questionFromAPI.getJSONArray("incorrect_answers");
                         List<String> incorrectAnswers = new ArrayList<>();
                         for (int j = 0; j < incorrectAnswersJson.length(); j++) {
-                            incorrectAnswers.add(incorrectAnswersJson.getString(j).replace("&quot;", "\"")
-                                                                                    .replace("&amp;", "&")
-                                                                                    .replace("#039;", "\'"));
+                            incorrectAnswers.add(incorrectAnswersJson.getString(j));
                         }
                         question.setIncorrectAnswers(incorrectAnswers);
 
@@ -90,6 +90,7 @@ public class TriviaDataService {
                 questionsResponse.onError("Something went wrong :(");
             }
         });
+        // queues request in the singleton
         MySingleton.getInstance(context).addToRequestQueue(request);
     }
 

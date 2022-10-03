@@ -30,7 +30,7 @@ public class CreateQuizActivity extends AppCompatActivity {
     private TextView txtNumberOfQuestions;
     private AutoCompleteTextView txtCategory, txtQuestionType, txtDifficulty;
     private TriviaDataService triviaDataService;
-    private TextInputLayout inlNumberOfQuestions;
+    private TextInputLayout inlNumberOfQuestions, inlCategory, inlQuestionType, inlDifficulty;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,8 +49,11 @@ public class CreateQuizActivity extends AppCompatActivity {
         txtQuestionType = findViewById(R.id.txtQuestionType);
         txtDifficulty = findViewById(R.id.txtDifficulty);
         inlNumberOfQuestions = findViewById(R.id.inlNumberOfQuestions);
+        inlCategory = findViewById(R.id.inlCategory);
+        inlQuestionType = findViewById(R.id.inlQuestionType);
+        inlDifficulty = findViewById(R.id.inlDifficulty);
 
-        // Get all the categories from API
+        // get all the categories from API
         triviaDataService = new TriviaDataService(CreateQuizActivity.this);
         triviaDataService.getCategories(new TriviaDataService.CategoriesResponse() {
             @Override
@@ -61,11 +64,10 @@ public class CreateQuizActivity extends AppCompatActivity {
             @Override
             public void onResponse(List<Category> categories) {
                 categoryOptions = new String[categories.size()];
-                //categoryOptions[0] = "Any";
                 for (int i = 0; i < categories.size(); i++) {
                     categoryOptions[i] = categories.get(i).getName();
                 }
-                // Add all of the options to txtCategory
+                // Add all category options
                 ArrayAdapter categoryAdapter = new ArrayAdapter(CreateQuizActivity.this, R.layout.list_item, categoryOptions);
                 txtCategory.setAdapter(categoryAdapter);
             }
@@ -76,53 +78,22 @@ public class CreateQuizActivity extends AppCompatActivity {
         ArrayAdapter<String> difficultyAdapter = new ArrayAdapter<String>(CreateQuizActivity.this, R.layout.list_item, difficultyOptions);
         txtDifficulty.setAdapter(difficultyAdapter);
 
-        // add all type options
+        // add all question type options
         String[] questionTypeOptions = {"Any", "Multiple Choice", "True/False"};
         ArrayAdapter<String> questionTypeAdapter = new ArrayAdapter<String>(CreateQuizActivity.this, R.layout.list_item, questionTypeOptions);
         txtQuestionType.setAdapter(questionTypeAdapter);
 
-        // click button to start quiz
+
+
+        // click button to create quiz
         btnStartQuiz.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // gets the amount of questions
-                amount = txtNumberOfQuestions.getText().toString();
-                int amountInt = 0;
-
-                if (!amount.equals("")){
-                    amountInt = Integer.parseInt(amount);
-                }
-
-                inlNumberOfQuestions.setError(null);
-
-                if (amount.equals("")) {
-                    inlNumberOfQuestions.setError("Must have at least 1 question");
-                }
-                else if (amountInt > 50){
-                    inlNumberOfQuestions.setError("Cannot have more than 50 questions");
-                }
-                else {
-                    // saves questionType as correct values for api submission
-                    if (txtQuestionType.getText().toString().equals("Multiple Choice")) {
-                        questionType = "multiple";
-                    }
-                    else if (txtQuestionType.getText().toString().equals("True/False")) {
-                        questionType = "boolean";
-                    }
-
-                    // saves difficulty as correct values for api submission
-                    if (txtDifficulty.getText().toString().equals("Easy")) {
-                        difficulty = "easy";
-                    }
-                    else if (txtDifficulty.getText().toString().equals("Medium")) {
-                        difficulty = "medium";
-                    }
-                    else if (txtDifficulty.getText().toString().equals("Hard")) {
-                        difficulty = "hard";
-                    }
+                // checks that all the text fields have a selected value, and the amount of questions is between 1-50
+                if (validateData()) {
+                    String categoryName = txtCategory.getText().toString();
 
                     // Get the correct categoryId for selected category
-                    String categoryName = txtCategory.getText().toString();
                     triviaDataService.getCategoryId(categoryName, new TriviaDataService.CategoryIdResponse() {
                         @Override
                         public void onError(String error) {
@@ -143,6 +114,8 @@ public class CreateQuizActivity extends AppCompatActivity {
 
                                     @Override
                                     public void onResponse(boolean enoughQuestions, int totNumberOfQuestions) {
+                                        // if there are enough questions for the category and difficulty, than make the quiz.
+                                        // if there isn't, than make a snackbar saying that there isn't enough questions
                                         if (enoughQuestions) {
                                             createQuiz();
                                         }
@@ -161,14 +134,80 @@ public class CreateQuizActivity extends AppCompatActivity {
                                     }
                                 });
                             }
-                            else {
-                                createQuiz();
-                            }
                         }
                     });
                 }
             }
         });
+    }
+
+    // validates the data submitted
+    private boolean validateData() {
+        boolean valid = true;
+
+        inlNumberOfQuestions.setError(null);
+        inlCategory.setError(null);
+        inlDifficulty.setError(null);
+        inlQuestionType.setError(null);
+
+        // gets the amount of questions
+        amount = txtNumberOfQuestions.getText().toString();
+        int amountInt = 0;
+
+        if (!amount.equals("")){
+            amountInt = Integer.parseInt(amount);
+        }
+        if (amount.equals("")) {
+            inlNumberOfQuestions.setError("Must have at least 1 question");
+            valid = false;
+        }
+        else if (amountInt > 50){
+            inlNumberOfQuestions.setError("Cannot have more than 50 questions");
+            valid = false;
+        }
+
+        //checks that a category has been selected
+        if (txtCategory.getText().toString().equals("")){
+            valid = false;
+            inlCategory.setError("Must select Category");
+        }
+
+        // checks that a question type has been selected
+        // saves questionType as correct values for api submission
+        if (txtQuestionType.getText().toString().equals("Multiple Choice")) {
+            questionType = "multiple";
+        }
+        else if (txtQuestionType.getText().toString().equals("True/False")) {
+            questionType = "boolean";
+        }
+        else if (txtQuestionType.getText().toString().equals("Any")){
+            questionType = "Any";
+        }
+        else {
+            valid = false;
+            inlQuestionType.setError("Must select Question Type");
+        }
+
+        // checks that a difficulty has been selected
+        // saves difficulty as correct values for api submission
+        if (txtDifficulty.getText().toString().equals("Easy")) {
+            difficulty = "easy";
+        }
+        else if (txtDifficulty.getText().toString().equals("Medium")) {
+            difficulty = "medium";
+        }
+        else if (txtDifficulty.getText().toString().equals("Hard")) {
+            difficulty = "hard";
+        }
+        else if (txtDifficulty.getText().toString().equals("Any")) {
+            difficulty = "Any";
+        }
+        else {
+            valid = false;
+            inlDifficulty.setError("Must select Difficulty");
+        }
+
+        return valid;
     }
 
     private void createQuiz(){
@@ -185,15 +224,23 @@ public class CreateQuizActivity extends AppCompatActivity {
                 try {
                     quizId = ((TriviaDB) getApplicationContext()).getNextQuizId();
                 } catch (Exception ex) {
-                    //no-op
+                    Log.e("Exception", ex.toString());
                 }
 
+                try {
+                    ((TriviaDB) getApplicationContext()).addQuiz(quizId, txtCategory.getText().toString(), txtQuestionType.getText().toString(),
+                            txtDifficulty.getText().toString(), Integer.parseInt(amount));
+                } catch (Exception ex) {
+                    Log.e("Exception", ex.toString());
+                }
+
+                // saves the questions returned from the API to the DB
                 for (Question question: questions) {
                     try {
                         ((TriviaDB) getApplicationContext()).addQuestion(quizId, question.getCategory(), question.getType(), question.getDifficulty(), question.getQuestionString(),
                                 question.getCorrectAnswer(), question.getIncorrectAnswers());
                     } catch (Exception ex) {
-                        // no-op
+                        Log.e("Exception", ex.toString());
                     }
                 }
 
@@ -205,6 +252,7 @@ public class CreateQuizActivity extends AppCompatActivity {
         });
     }
 
+    // return button (back arrow)
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         boolean result = true;

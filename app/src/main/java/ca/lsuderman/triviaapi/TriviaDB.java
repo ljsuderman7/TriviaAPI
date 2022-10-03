@@ -11,7 +11,7 @@ import java.util.Locale;
 
 public class TriviaDB extends Application {
     private static final String DB_NAME = "db_trivia";
-    private static int DB_VERSION = 1;
+    private static int DB_VERSION = 3;
 
     private SQLiteOpenHelper helper;
 
@@ -32,6 +32,14 @@ public class TriviaDB extends Application {
                         "incorrect_answer_2 TEXT," +
                         "incorrect_answer_3 TEXT," +
                         "answer_given TEXT)");
+
+                db.execSQL("CREATE TABLE IF NOT EXISTS tbl_quiz(" +
+                        "quiz_id INTEGER NOT NULL," +
+                        "category TEXT NOT NULL," +
+                        "type TEXT NOT NULL," +
+                        "difficulty TEXT NOT NULL," +
+                        "number_of_questions INTEGER NOT NULL," +
+                        "correct_answers INTEGER NOT NULL)");
             }
 
             @Override
@@ -41,6 +49,8 @@ public class TriviaDB extends Application {
         };
         super.onCreate();
     }
+
+    //region Question Table Methods
 
     public void addQuestion(int quizId, String category, String type, String difficulty, String questionString, String correctAnswer, List<String> incorrectAnswers) {
         String incorrectAnswer1 = incorrectAnswers.get(0);
@@ -204,4 +214,84 @@ public class TriviaDB extends Application {
         SQLiteDatabase db = helper.getWritableDatabase();
         db.execSQL("DELETE FROM tbl_question");
     }
+
+    //endregion
+
+    //region Quiz Table Methods
+
+    public void addQuiz(int quizId, String category, String type, String difficulty, int numberOfQuestions) {
+        SQLiteDatabase db = helper.getWritableDatabase();
+        db.execSQL("INSERT INTO tbl_quiz(quiz_id, category, type, difficulty, number_of_questions, correct_answers) " +
+                "VALUES ('" + quizId + "', '" + category + "', '" + type + "', '" + difficulty + "', '" + numberOfQuestions + "', '" + 0 + "')");
+    }
+
+    public void setCorrectAnswers(int quizId, int correctAnswers){
+        SQLiteDatabase db = helper.getWritableDatabase();
+        db.execSQL("UPDATE tbl_quiz SET correct_answers = '" + correctAnswers + "' WHERE quiz_id = " + quizId);
+    }
+
+    public Quiz getQuiz(int quizId){
+        Quiz quiz = new Quiz();
+
+        SQLiteDatabase db = helper.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM tbl_quiz WHERE quiz_id=" + quizId, null );
+
+        if (cursor != null) {
+            cursor.moveToFirst();
+        }
+
+        quiz.setId(cursor.getInt(0));
+        quiz.setCategory(cursor.getString(1));
+        quiz.setQuestionType(cursor.getString(2));
+        quiz.setDifficulty(cursor.getString(3));
+        quiz.setNumberOfQuestions(cursor.getInt(4));
+        quiz.setCorrectAnswers(cursor.getInt(5));
+
+        cursor.close();
+
+        return quiz;
+    }
+
+    public List<Quiz> getAllQuizzes(){
+        List<Quiz> quizzes = new ArrayList<>();
+        SQLiteDatabase db = helper.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM tbl_quiz ORDER BY quiz_id", null );
+
+        if (cursor != null) {
+            cursor.moveToFirst();
+        }
+
+        if (cursor.getCount() > 0) {
+            while (cursor.getPosition() < cursor.getCount()) {
+                Quiz quiz = new Quiz();
+
+                quiz.setId(cursor.getInt(0));
+                quiz.setCategory(cursor.getString(1));
+                quiz.setDifficulty(cursor.getString(2));
+                quiz.setNumberOfQuestions(cursor.getInt(3));
+                quiz.setQuestionType(cursor.getString(4));
+                quiz.setCorrectAnswers(cursor.getInt(5));
+
+                quizzes.add(quiz);
+
+                cursor.moveToNext();
+            }
+        }
+
+        cursor.close();
+        return quizzes;
+    }
+
+    public void deleteQuiz(int id) {
+        SQLiteDatabase db = helper.getWritableDatabase();
+        db.execSQL("DELETE FROM tbl_quiz WHERE quiz_id=" + id);
+    }
+
+    public void deleteAllQuizzes() {
+        SQLiteDatabase db = helper.getWritableDatabase();
+        db.execSQL("DELETE FROM tbl_quiz");
+    }
+
+
+    //endregion
 }

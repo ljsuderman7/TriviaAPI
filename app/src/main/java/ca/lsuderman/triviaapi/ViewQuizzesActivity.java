@@ -93,6 +93,9 @@ public class ViewQuizzesActivity extends AppCompatActivity {
                 }
             }
 
+            // TODO: display all the quiz details
+            String details = "";
+
             txtDetails.setText("Result: " + correct + "/" + quiz.size());
 
             quizLayout.addView(txtDetails);

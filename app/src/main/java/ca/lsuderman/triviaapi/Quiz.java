@@ -4,22 +4,30 @@ import java.util.List;
 
 public class Quiz {
     private int id;
-    private List<Question> questions;
+    private String category;
+    private String difficulty;
+    private int numberOfQuestions;
+    private int correctAnswers;
+    private String questionType;
 
-    public Quiz(int id, List<Question> questions) {
+    public Quiz(int id, String category, String difficulty, int numberOfQuestions, int correctAnswers, String questionType) {
         this.id = id;
-        this.questions = questions;
+        this.category = category;
+        this.difficulty = difficulty;
+        this.numberOfQuestions = numberOfQuestions;
+        this.correctAnswers = correctAnswers;
+        this.questionType = questionType;
     }
 
     public Quiz() {
     }
 
-    @Override
-    public String toString() {
-        return "Quiz{" +
-                "id=" + id +
-                ", questions=" + questions +
-                '}';
+    public int getCorrectAnswers() {
+        return correctAnswers;
+    }
+
+    public void setCorrectAnswers(int correctAnswers) {
+        this.correctAnswers = correctAnswers;
     }
 
     public int getId() {
@@ -30,11 +38,35 @@ public class Quiz {
         this.id = id;
     }
 
-    public List<Question> getQuestions() {
-        return questions;
+    public String getCategory() {
+        return category;
     }
 
-    public void setQuestions(List<Question> questions) {
-        this.questions = questions;
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public String getDifficulty() {
+        return difficulty;
+    }
+
+    public void setDifficulty(String difficulty) {
+        this.difficulty = difficulty;
+    }
+
+    public int getNumberOfQuestions() {
+        return numberOfQuestions;
+    }
+
+    public void setNumberOfQuestions(int numberOfQuestions) {
+        this.numberOfQuestions = numberOfQuestions;
+    }
+
+    public String getQuestionType() {
+        return questionType;
+    }
+
+    public void setQuestionType(String questionType) {
+        this.questionType = questionType;
     }
 }

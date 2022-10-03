@@ -23,7 +23,7 @@ public class QuestionActivity extends AppCompatActivity {
     private RadioGroup radAnswers;
     private RadioButton radAnswer1, radAnswer2, radAnswer3, radAnswer4;
     private Button btnNextQuestion, btnPreviousQuestion;
-    private TextView txtQuestionCategory, txtQuestion;
+    private TextView txtQuestionCategory, txtQuestion, txtQuestionDifficulty;
     private int currentQuestionId = 0, quizId;
     private String answerGiven = "";
     private List<Question> questions;
@@ -43,6 +43,7 @@ public class QuestionActivity extends AppCompatActivity {
         btnPreviousQuestion = findViewById(R.id.btnPreviousQuestion);
         txtQuestionCategory = findViewById(R.id.txtQuestionCategory);
         txtQuestion = findViewById(R.id.txtQuestion);
+        txtQuestionDifficulty = findViewById(R.id.txtQuestionDifficulty);
 
         // gets all the questions that were created for the selected quiz
         quizId = getIntent().getExtras().getInt("quizId");
@@ -51,24 +52,25 @@ public class QuestionActivity extends AppCompatActivity {
         // displays the first question
         displayCurrentQuestion();
 
-        // goes to the next question
+        // goes to the next question, saves the selected answer
         btnNextQuestion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (radAnswer1.isChecked()) {
-                    answerGiven = radAnswer1.getText().toString();
+                    // converts it back to HTML characters to save better in the DB
+                    answerGiven = Utilities.convertBackToHTMLCharacters(radAnswer1.getText().toString());
                     selectAnswer();
                 }
                 else if (radAnswer2.isChecked()){
-                    answerGiven = radAnswer2.getText().toString();
+                    answerGiven = Utilities.convertBackToHTMLCharacters(radAnswer2.getText().toString());
                     selectAnswer();
                 }
                 else if (radAnswer3.isChecked()){
-                    answerGiven = radAnswer3.getText().toString();
+                    answerGiven = Utilities.convertBackToHTMLCharacters(radAnswer3.getText().toString());
                     selectAnswer();
                 }
                 else if (radAnswer4.isChecked()){
-                    answerGiven = radAnswer4.getText().toString();
+                    answerGiven = Utilities.convertBackToHTMLCharacters(radAnswer4.getText().toString());
                     selectAnswer();
                 }
                 else {
@@ -77,7 +79,8 @@ public class QuestionActivity extends AppCompatActivity {
             }
         });
 
-        // goes to the previous question
+        // goes to the previous question, has the answer that was originally selected checked
+        // TODO: fix issue with not showing all the choices
         btnPreviousQuestion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -120,6 +123,7 @@ public class QuestionActivity extends AppCompatActivity {
             btnPreviousQuestion.setEnabled(true);
         }
 
+        // if it is the last question, than change the text txtNextQuestion to "Finish Quiz"
         if (currentQuestionId + 1 == questions.size()){
             btnNextQuestion.setText("Finish Quiz");
         }
@@ -127,10 +131,19 @@ public class QuestionActivity extends AppCompatActivity {
             btnNextQuestion.setText("Next Question");
         }
 
+        // gets the current question from the list of all questions in the quiz
         currentQuestion = questions.get(currentQuestionId);
-        txtQuestionCategory.setText("Category: " + currentQuestion.getCategory());
-        txtQuestion.setText(currentQuestion.getQuestionString());
 
+        // updates the category
+        txtQuestionCategory.setText("Category: " + currentQuestion.getCategory());
+
+        // displays the question's difficulty
+        txtQuestionDifficulty.setText("Difficulty: " + currentQuestion.getDifficulty());
+
+        // displays the question
+        txtQuestion.setText(Utilities.replaceHTMLCharacters(currentQuestion.getQuestionString()));
+
+        // puts the incorrect and correct answers together to put into radio buttons
         List<String> answers = currentQuestion.getIncorrectAnswers();
         answers.add(currentQuestion.getCorrectAnswer());
 
@@ -143,26 +156,35 @@ public class QuestionActivity extends AppCompatActivity {
         // puts answers in random radio buttons
         Random random = new Random();
 
+        // saves the amount of answers to check if true/false later
         int numberOfAnswers = answers.size();
 
+        // picks a random answer from list of answers and puts it as the first option
+        // removes answer from the list
         int firstAnswer = random.nextInt(numberOfAnswers);
-        radAnswer1.setText(answers.get(firstAnswer));
+        radAnswer1.setText(Utilities.replaceHTMLCharacters(answers.get(firstAnswer)));
         answers.remove(firstAnswer);
 
+        // picks a random answer from list of answers and puts it as the first option
+        // removes answer from the list
         int secondAnswer = random.nextInt(numberOfAnswers - 1);
-        radAnswer2.setText(answers.get(secondAnswer));
+        radAnswer2.setText(Utilities.replaceHTMLCharacters(answers.get(secondAnswer)));
         answers.remove(secondAnswer);
 
+        // if the number of answers is greater than 2, then it is a multiple choice question
+        // if it is a multiple choice question than put options in the 3rd and 4th radio buttons
         if (numberOfAnswers > 2) {
             int thirdAnswer = random.nextInt(numberOfAnswers - 2);
-            radAnswer3.setText(answers.get(thirdAnswer));
+            radAnswer3.setText(Utilities.replaceHTMLCharacters(answers.get(thirdAnswer)));
             answers.remove(thirdAnswer);
 
-            radAnswer4.setText(answers.get(0));
+            // just puts the last remaining answer in the last radio button
+            radAnswer4.setText(Utilities.replaceHTMLCharacters(answers.get(0)));
 
             radAnswer3.setVisibility(View.VISIBLE);
             radAnswer4.setVisibility(View.VISIBLE);
         }
+        // if it is a true/false question, remove the 3rd and 4th radio buttons from the screen
         else{
             radAnswer3.setVisibility(View.GONE);
             radAnswer4.setVisibility(View.GONE);
@@ -173,8 +195,8 @@ public class QuestionActivity extends AppCompatActivity {
         try {
             ((TriviaDB) getApplicationContext()).addQuestionAnswerGiven(answerGiven, currentQuestion.getQuestionId());
         }
-        catch (Exception e) {
-            // no-op
+        catch (Exception exception) {
+            Log.e("Exception", exception.toString());
         }
 
         currentQuestionId++;
@@ -184,6 +206,7 @@ public class QuestionActivity extends AppCompatActivity {
             displayCurrentQuestion();
             radAnswers.clearCheck();
         }
+        // if it is the last question then go to QuizResultsActivity
         else {
             // display results
             Intent intent = new Intent(getApplicationContext(), QuizResultsActivity.class);

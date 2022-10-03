@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -41,21 +42,38 @@ public class QuizResultsActivity extends AppCompatActivity {
         int correctAnswers = 0;
         String details = "";
 
+        // displays the answers that was selected, and the correct answer for each question in the quiz
+        // TODO: figure out why it doesn't replace the HTML characters
         for (Question question: questions) {
+            String correctAnswer = question.getCorrectAnswer();
+            correctAnswer = Utilities.replaceHTMLCharacters(correctAnswer);
+
+            String answerGiven = question.getAnswerGiven();
+            answerGiven = Utilities.replaceHTMLCharacters(answerGiven);
+
             details += questionNumber + ": " + question.getQuestionString() + "\n" +
-                    "Correct Answer: " + question.getCorrectAnswer() + "\n" +
-                    "Your Answer: " + question.getAnswerGiven() + "\n\n";
+                    "Correct Answer: " + correctAnswer +
+                    "\nYour Answer: " + answerGiven +
+                    "\n\n";
             if (question.getCorrectAnswer().equals(question.getAnswerGiven())){
                 correctAnswers++;
             }
             questionNumber++;
         }
 
+        try {
+            ((TriviaDB) getApplicationContext()).setCorrectAnswers(quizId, correctAnswers);
+        } catch (Exception exception) {
+            Log.e("exception", exception.toString());
+        }
+
+        // calculates the quiz score and displays it on the screen
         double average = (double) correctAnswers / (double) questions.size() * 100.0;
         txtResult.setText("You got " + correctAnswers + " out of " + questions.size() + " correct (" + df.format(average) + "%)");
 
         txtDetails.setText(details);
 
+        // clicks to go to the home page
         btnHome.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -63,6 +81,7 @@ public class QuizResultsActivity extends AppCompatActivity {
             }
         });
 
+        // clicks to retake the quiz
         btnRetakeQuiz.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

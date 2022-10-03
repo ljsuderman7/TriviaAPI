@@ -8,9 +8,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -20,9 +18,10 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     private Button btnGenerate, btnViewQuizzes;
-    private TextView txtTotalQuizzes, txtAllAverage, txtPerfectQuizzes, txtQuestionsAnswered;
+    private TextView txtTotalQuizzes, txtAllAverage, txtPerfectQuizzes, txtQuestionsAnswered, txtLatestQuiz;
     private LinearLayout llStats;
-    private List<Question> questions;
+    private List<Question> questions, latestQuizQuestions;
+    private Quiz latestQuiz;
     private static final DecimalFormat df = new DecimalFormat("0.00");
 
     @Override
@@ -41,18 +40,39 @@ public class MainActivity extends AppCompatActivity {
         txtAllAverage = findViewById(R.id.txtAllAverage);
         txtPerfectQuizzes = findViewById(R.id.txtPerfectQuizzes);
         txtQuestionsAnswered = findViewById(R.id.txtQuestionsAnswered);
+        txtLatestQuiz = findViewById(R.id.txtLatestQuiz);
         llStats = findViewById(R.id.llStats);
-
-        //TriviaDataService triviaDataService = new TriviaDataService(MainActivity.this);
 
         int totalQuizzes = 0;
         try {
             questions = ((TriviaDB) getApplicationContext()).getAllQuestions();
             totalQuizzes = ((TriviaDB) getApplicationContext()).getNextQuizId() - 1;
+            latestQuizQuestions = ((TriviaDB) getApplicationContext()).getAllQuestionsByQuizId(totalQuizzes);
+            latestQuiz = ((TriviaDB) getApplicationContext()).getQuiz(totalQuizzes);
         } catch (Exception exception) {
             // no-op
         }
 
+        displayStats(totalQuizzes);
+
+        // goes to quiz setup page
+        btnGenerate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getApplicationContext(), CreateQuizActivity.class));
+            }
+        });
+
+        // goes to view all quizzes page
+        btnViewQuizzes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getApplicationContext(), ViewQuizzesActivity.class));
+            }
+        });
+    }
+
+    private void displayStats(int totalQuizzes){
         if (questions.size() > 0) {
             // total number of questions answered
             txtQuestionsAnswered.setText(String.valueOf(questions.size()));
@@ -67,25 +87,28 @@ public class MainActivity extends AppCompatActivity {
             double average = getAllAverage();
             txtAllAverage.setText(df.format(average) + "%");
 
+            // latest quiz info
+            int correctAnswers = 0;
+            for (Question question: latestQuizQuestions) {
+                if (question.getAnswerGiven().equals(question.getCorrectAnswer())) {
+                    correctAnswers++;
+                }
+            }
+
+            double latestQuizAverage = (double) latestQuiz.getCorrectAnswers() / (double) latestQuiz.getNumberOfQuestions() * 100;
+            String latestQuizInfo = "Category: " + latestQuiz.getCategory() +
+                    "\nDifficulty: " + latestQuiz.getDifficulty() +
+                    "\nQuestion Type: " + latestQuiz.getQuestionType() +
+                    "\nScore: " + String.valueOf(latestQuiz.getCorrectAnswers()) + "/" + String.valueOf(latestQuiz.getNumberOfQuestions()) + " (" + df.format(latestQuizAverage) + "%)" +
+                    "\n";
+
+            txtLatestQuiz.setText(latestQuizInfo);
+
             llStats.setVisibility(View.VISIBLE);
         }
         else {
             llStats.setVisibility(View.GONE);
         }
-
-        btnGenerate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(getApplicationContext(), CreateQuizActivity.class));
-            }
-        });
-
-        btnViewQuizzes.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(getApplicationContext(), ViewQuizzesActivity.class));
-            }
-        });
     }
 
     // returns the amount of quizzes with a perfect score

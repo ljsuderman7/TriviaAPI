@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -80,7 +81,6 @@ public class QuestionActivity extends AppCompatActivity {
         });
 
         // goes to the previous question, has the answer that was originally selected checked
-        // TODO: fix issue with not showing all the choices
         btnPreviousQuestion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -88,26 +88,27 @@ public class QuestionActivity extends AppCompatActivity {
                 displayCurrentQuestion();
                 radAnswers.clearCheck();
                 //TODO: checks the correct radio button for answer previously given
-                if (radAnswer1.getText().equals(currentQuestion.getAnswerGiven())) {
-                    Log.d("Radio Button", "1");
-                    radAnswer1.setChecked(true);
-                }
-                else if (radAnswer2.getText().equals(currentQuestion.getAnswerGiven())) {
-                    Log.d("Radio Button", "2");
-                    radAnswer2.setChecked(true);
-                }
-                else if (radAnswer3.getText().equals(currentQuestion.getAnswerGiven())) {
-                    Log.d("Radio Button", "3");
-                    radAnswer3.setChecked(true);
-                }
-                else if (radAnswer4.getText().equals(currentQuestion.getAnswerGiven())) {
-                    Log.d("Radio Button", "4");
-                    radAnswer4.setChecked(true);
-                }
+//                if (radAnswer1.getText().equals(currentQuestion.getAnswerGiven())) {
+//                    Log.d("Radio Button", "1");
+//                    radAnswer1.setChecked(true);
+//                }
+//                else if (radAnswer2.getText().equals(currentQuestion.getAnswerGiven())) {
+//                    Log.d("Radio Button", "2");
+//                    radAnswer2.setChecked(true);
+//                }
+//                else if (radAnswer3.getText().equals(currentQuestion.getAnswerGiven())) {
+//                    Log.d("Radio Button", "3");
+//                    radAnswer3.setChecked(true);
+//                }
+//                else if (radAnswer4.getText().equals(currentQuestion.getAnswerGiven())) {
+//                    Log.d("Radio Button", "4");
+//                    radAnswer4.setChecked(true);
+//                }
             }
         });
     }
 
+    // displays the information for the current question in the quiz
     private void displayCurrentQuestion() {
         ActionBar actionBar = getSupportActionBar();
         // sets action bar title to the question number
@@ -143,8 +144,17 @@ public class QuestionActivity extends AppCompatActivity {
         // displays the question
         txtQuestion.setText(Utilities.replaceHTMLCharacters(currentQuestion.getQuestionString()));
 
+        // displays answers
+        populateRadioButtons();
+    }
+
+    // puts the answers in the radio buttons
+    private void populateRadioButtons(){
         // puts the incorrect and correct answers together to put into radio buttons
-        List<String> answers = currentQuestion.getIncorrectAnswers();
+        List<String> answers = new ArrayList<>();
+        answers.add(currentQuestion.getIncorrectAnswers().get(0));
+        answers.add(currentQuestion.getIncorrectAnswers().get(1));
+        answers.add(currentQuestion.getIncorrectAnswers().get(2));
         answers.add(currentQuestion.getCorrectAnswer());
 
         // if the seconds answer in answers is "", then it is a true/false. so remove the second and third incorrect answers from answers
@@ -191,6 +201,7 @@ public class QuestionActivity extends AppCompatActivity {
         }
     }
 
+    // selects the chosen answers, goes to the next question or finishes the quiz if it the last question
     private void selectAnswer() {
         try {
             ((TriviaDB) getApplicationContext()).addQuestionAnswerGiven(answerGiven, currentQuestion.getQuestionId());

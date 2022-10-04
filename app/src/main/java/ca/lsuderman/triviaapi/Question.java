@@ -33,11 +33,11 @@ public class Question {
         String message = "Category: " + category + "\n" +
                         "Type: " + type + "\n" +
                         "Difficulty: " + difficulty + "\n" +
-                        "Question: " + questionString + "\n" +
-                        "Correct Answer: " + correctAnswer + "\n";
+                        "Question: " + Utilities.replaceHTMLCharacters(questionString) + "\n" +
+                        "Correct Answer: " + Utilities.replaceHTMLCharacters(correctAnswer) + "\n";
 
         for (int i = 0; i < incorrectAnswers.size(); i++) {
-            message += "Incorrect Answer #" + (i+1) + ": " + incorrectAnswers.get(i) + "\n";
+            message += "Incorrect Answer #" + (i+1) + ": " + Utilities.replaceHTMLCharacters(incorrectAnswers.get(i)) + "\n";
         }
 
         return message;

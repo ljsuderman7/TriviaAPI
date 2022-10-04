@@ -27,7 +27,7 @@
             android:layout_weight="1"
             android:gravity="bottom"
             android:orientation="vertical"
-            android:visibility="gone">
+            android:visibility="visible">
 
             <Button
                 android:id="@+id/btnDeleteAllQuizzes"

@@ -47,8 +47,12 @@ public class QuestionActivity extends AppCompatActivity {
         txtQuestionDifficulty = findViewById(R.id.txtQuestionDifficulty);
 
         // gets all the questions that were created for the selected quiz
-        quizId = getIntent().getExtras().getInt("quizId");
-        questions = ((TriviaDB) getApplicationContext()).getAllQuestionsByQuizId(quizId);
+        try {
+            quizId = getIntent().getExtras().getInt("quizId");
+            questions = ((TriviaDB) getApplicationContext()).getAllQuestionsByQuizId(quizId);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         // displays the first question
         displayCurrentQuestion();
@@ -87,23 +91,19 @@ public class QuestionActivity extends AppCompatActivity {
                 currentQuestionId--;
                 displayCurrentQuestion();
                 radAnswers.clearCheck();
-                //TODO: checks the correct radio button for answer previously given
-//                if (radAnswer1.getText().equals(currentQuestion.getAnswerGiven())) {
-//                    Log.d("Radio Button", "1");
-//                    radAnswer1.setChecked(true);
-//                }
-//                else if (radAnswer2.getText().equals(currentQuestion.getAnswerGiven())) {
-//                    Log.d("Radio Button", "2");
-//                    radAnswer2.setChecked(true);
-//                }
-//                else if (radAnswer3.getText().equals(currentQuestion.getAnswerGiven())) {
-//                    Log.d("Radio Button", "3");
-//                    radAnswer3.setChecked(true);
-//                }
-//                else if (radAnswer4.getText().equals(currentQuestion.getAnswerGiven())) {
-//                    Log.d("Radio Button", "4");
-//                    radAnswer4.setChecked(true);
-//                }
+
+                if (radAnswer1.getText().equals(currentQuestion.getAnswerGiven())) {
+                    radAnswer1.setChecked(true);
+                }
+                else if (radAnswer2.getText().equals(currentQuestion.getAnswerGiven())) {
+                    radAnswer2.setChecked(true);
+                }
+                else if (radAnswer3.getText().equals(currentQuestion.getAnswerGiven())) {
+                    radAnswer3.setChecked(true);
+                }
+                else if (radAnswer4.getText().equals(currentQuestion.getAnswerGiven())) {
+                    radAnswer4.setChecked(true);
+                }
             }
         });
     }
@@ -130,6 +130,13 @@ public class QuestionActivity extends AppCompatActivity {
         }
         else {
             btnNextQuestion.setText("Next Question");
+        }
+
+        // updates the questions so the answerGiven is updated
+        try {
+            questions = ((TriviaDB) getApplicationContext()).getAllQuestionsByQuizId(quizId);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         // gets the current question from the list of all questions in the quiz

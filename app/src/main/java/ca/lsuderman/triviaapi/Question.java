@@ -40,6 +40,8 @@ public class Question {
             message += "Incorrect Answer #" + (i+1) + ": " + Utilities.replaceHTMLCharacters(incorrectAnswers.get(i)) + "\n";
         }
 
+        message += "Answer Given: " + answerGiven;
+
         return message;
     }
 

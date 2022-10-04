@@ -43,7 +43,6 @@ public class QuizResultsActivity extends AppCompatActivity {
         String details = "";
 
         // displays the answers that was selected, and the correct answer for each question in the quiz
-        // TODO: figure out why it doesn't replace the HTML characters
         for (Question question: questions) {
             String correctAnswer = question.getCorrectAnswer();
             correctAnswer = Utilities.replaceHTMLCharacters(correctAnswer);
@@ -51,7 +50,7 @@ public class QuizResultsActivity extends AppCompatActivity {
             String answerGiven = question.getAnswerGiven();
             answerGiven = Utilities.replaceHTMLCharacters(answerGiven);
 
-            details += questionNumber + ": " + question.getQuestionString() + "\n" +
+            details += questionNumber + ": " + Utilities.replaceHTMLCharacters(question.getQuestionString()) + "\n" +
                     "Correct Answer: " + correctAnswer +
                     "\nYour Answer: " + answerGiven +
                     "\n\n";

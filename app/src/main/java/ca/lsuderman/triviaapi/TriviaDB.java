@@ -7,7 +7,6 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 public class TriviaDB extends Application {
     private static final String DB_NAME = "db_trivia";
@@ -267,9 +266,9 @@ public class TriviaDB extends Application {
 
                 quiz.setId(cursor.getInt(0));
                 quiz.setCategory(cursor.getString(1));
-                quiz.setDifficulty(cursor.getString(2));
-                quiz.setNumberOfQuestions(cursor.getInt(3));
-                quiz.setQuestionType(cursor.getString(4));
+                quiz.setQuestionType(cursor.getString(2));
+                quiz.setDifficulty(cursor.getString(3));
+                quiz.setNumberOfQuestions(cursor.getInt(4));
                 quiz.setCorrectAnswers(cursor.getInt(5));
 
                 quizzes.add(quiz);

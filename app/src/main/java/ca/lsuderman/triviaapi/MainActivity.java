@@ -96,7 +96,9 @@ public class MainActivity extends AppCompatActivity {
             }
 
             double latestQuizAverage = (double) latestQuiz.getCorrectAnswers() / (double) latestQuiz.getNumberOfQuestions() * 100;
-            String latestQuizInfo = "Category: " + latestQuiz.getCategory() +
+
+            String latestQuizInfo = "Quiz #" + latestQuiz.getId() +
+                    "\nCategory: " + latestQuiz.getCategory() +
                     "\nDifficulty: " + latestQuiz.getDifficulty() +
                     "\nQuestion Type: " + latestQuiz.getQuestionType() +
                     "\nScore: " + String.valueOf(latestQuiz.getCorrectAnswers()) + "/" + String.valueOf(latestQuiz.getNumberOfQuestions()) + " (" + df.format(latestQuizAverage) + "%)" +

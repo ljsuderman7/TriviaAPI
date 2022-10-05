@@ -3,6 +3,8 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Personal Projects/TriviaAPI/app/src/main/res/drawable/button_bg.xml" value="0.274" />
+        <entry key="..\:/Personal Projects/TriviaAPI/app/src/main/res/drawable/button_style.xml" value="0.274" />
         <entry key="..\:/Personal Projects/TriviaAPI/app/src/main/res/font/montserrat_alternates.xml" value="0.396875" />
         <entry key="..\:/Personal Projects/TriviaAPI/app/src/main/res/layout/activity_create_quiz.xml" value="0.275" />
         <entry key="..\:/Personal Projects/TriviaAPI/app/src/main/res/layout/activity_main.xml" value="0.36666666666666664" />

@@ -7,7 +7,6 @@
     tools:context=".ViewQuizzesActivity">
 
     <LinearLayout
-        android:id="@+id/llQuizzes"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginStart="8dp"
@@ -20,11 +19,24 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <LinearLayout
+                android:id="@+id/llQuizzes"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+            </LinearLayout>
+        </ScrollView>
+
         <LinearLayout
             android:id="@+id/llDeleteButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:gravity="bottom"
             android:orientation="vertical"
             android:visibility="visible">
@@ -34,7 +46,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Delete All Quizzes" />
+
         </LinearLayout>
+
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

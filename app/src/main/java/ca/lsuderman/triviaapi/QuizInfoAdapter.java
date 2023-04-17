@@ -86,11 +86,6 @@ public class QuizInfoAdapter extends RecyclerView.Adapter<QuizInfoAdapter.viewHo
                     intent.putExtra("quizId", quizId);
                     intent.putExtra("singleDelete", true);
                     view.getContext().startActivity(intent);
-//                    try {
-//                        ((TriviaDB) view.getContext()).deleteQuiz(quizId);
-//                    } catch (Exception ex) {
-//                        ex.printStackTrace();
-//                    }
                 }
             });
         }

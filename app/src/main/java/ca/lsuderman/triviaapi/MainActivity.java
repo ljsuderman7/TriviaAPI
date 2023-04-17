@@ -67,7 +67,10 @@ public class MainActivity extends AppCompatActivity {
         btnViewQuizzes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(getApplicationContext(), ViewQuizzesActivity.class));
+                Intent intent = new Intent(view.getContext(), ViewQuizzesActivity.class);
+                intent.putExtra("quizId", 0);
+                intent.putExtra("singleDelete", false);
+                startActivity(intent);
             }
         });
     }
